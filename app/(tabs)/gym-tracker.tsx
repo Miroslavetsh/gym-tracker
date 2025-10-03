@@ -98,7 +98,7 @@ export default function GymTrackerScreen() {
       </Collapsible>
       <Collapsible title="Fetch All Trainings">
         <ThemedText style={styles.debugText}>
-          Platform: {Platform.OS}
+          Platform: {Platform.OS[0].toUpperCase() + Platform.OS.slice(1)}
         </ThemedText>
 
         {loading && (
