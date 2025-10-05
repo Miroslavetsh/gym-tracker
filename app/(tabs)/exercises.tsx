@@ -9,6 +9,8 @@ import { useSearch } from "@/hooks/use-search";
 import { ExerciseService } from "@/services/exerciseService";
 import { Exercise } from "@/types/training";
 
+const SEARCH_FIELDS: (keyof Exercise)[] = ["name", "weight", "repetitions"];
+
 export default function ExercisesScreen() {
   const [exercises, setExercises] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -19,7 +21,7 @@ export default function ExercisesScreen() {
     filteredData: filteredExercises,
   } = useSearch<Exercise>({
     data: exercises,
-    searchFields: ["name", "weight", "repetitions"],
+    searchFields: SEARCH_FIELDS,
   });
 
   const fetchExercises = useCallback(async () => {

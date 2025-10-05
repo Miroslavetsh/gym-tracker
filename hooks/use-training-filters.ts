@@ -1,6 +1,6 @@
 import { searchAndFilterTrainings } from "@/lib/utils/training-search-utils";
 import { Training } from "@/types/training";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 interface UseTrainingFiltersOptions {
   trainings: Training[];
@@ -24,21 +24,15 @@ export function useTrainingFilters({
 }: UseTrainingFiltersOptions): UseTrainingFiltersReturn {
   const [selectedType, setSelectedType] = useState(initialType);
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
-  const [filteredTrainings, setFilteredTrainings] = useState<Training[]>(trainings);
 
-  const filterTrainings = useCallback(() => {
-    const filtered = searchAndFilterTrainings(trainings, searchQuery, selectedType);
-    setFilteredTrainings(filtered);
+  const filteredTrainings = useMemo(() => {
+    return searchAndFilterTrainings(trainings, searchQuery, selectedType);
   }, [trainings, searchQuery, selectedType]);
 
   const clearFilters = useCallback(() => {
     setSelectedType("Всі типи");
     setSearchQuery("");
   }, []);
-
-  useEffect(() => {
-    filterTrainings();
-  }, [filterTrainings]);
 
   return {
     selectedType,

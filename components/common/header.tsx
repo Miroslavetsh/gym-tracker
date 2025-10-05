@@ -41,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
       <View style={styles.headerButtons}>
         {showToggleFiltersButton && onToggleFilters && (
           <Button
-            title={filtersVisible ? "Сховати" : "Показати"}
+            title={filtersVisible ? "Сховати" : "Фільтри"}
             onPress={onToggleFilters}
             icon={filtersVisible ? "chevron.up" : "chevron.down"}
             style={styles.toggleButton}

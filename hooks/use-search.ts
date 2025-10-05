@@ -1,5 +1,5 @@
 import { searchInObject } from "@/lib/utils/search-utils";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 interface UseSearchOptions<T> {
   data: T[];
@@ -20,27 +20,19 @@ export function useSearch<T>({
   initialSearchQuery = "",
 }: UseSearchOptions<T>): UseSearchReturn<T> {
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
-  const [filteredData, setFilteredData] = useState<T[]>(data);
 
-  const filterData = useCallback(() => {
+  const filteredData = useMemo(() => {
     if (!searchQuery.trim()) {
-      setFilteredData(data);
-      return;
+      return data;
     }
 
     const query = searchQuery.toLowerCase().trim();
-    const filtered = data.filter((item) => searchInObject(item, searchFields, query));
-
-    setFilteredData(filtered);
-  }, [data, searchQuery, searchFields]);
+    return data.filter((item) => searchInObject(item, searchFields, query));
+  }, [data, searchQuery, searchFields.join(',')]);
 
   const clearSearch = useCallback(() => {
     setSearchQuery("");
   }, []);
-
-  useEffect(() => {
-    filterData();
-  }, [filterData]);
 
   return {
     searchQuery,

@@ -14,7 +14,7 @@ import { Training } from "@/types/training";
 export default function TrainingsScreen() {
   const [trainings, setTrainings] = useState<Training[]>([]);
   const [loading, setLoading] = useState(false);
-  const [filtersVisible, setFiltersVisible] = useState(true);
+  const [filtersVisible, setFiltersVisible] = useState(false);
 
   const {
     selectedType,
@@ -28,7 +28,7 @@ export default function TrainingsScreen() {
   const fetchTrainings = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await TrainingService.getAllTrainings();
+      const data = await TrainingService.getLast10Trainings();
       setTrainings(data);
     } catch (error) {
       Alert.alert("Помилка", "Не вдалося завантажити тренування");
