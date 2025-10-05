@@ -189,7 +189,7 @@ export default function AddTrainingScreen() {
 
           <View style={styles.actionButtons}>
             <Button
-              title="Зберегти тренування"
+              title="Зберегти"
               onPress={handleSaveTraining}
               disabled={loading}
               style={styles.saveButton}

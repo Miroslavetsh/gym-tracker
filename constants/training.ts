@@ -1,6 +1,3 @@
-enum TrainingType {
-  UPPER = "Верх",
-  LEGS = "Ноги",
-}
+export const TRAINING_TYPES = ["Верх", "Ноги", "Спина", "Груди", "Плечі", "Руки"] as const;
 
-export const TRAINING_TYPES = [TrainingType.UPPER, TrainingType.LEGS];
+export type TrainingType = typeof TRAINING_TYPES[number];
