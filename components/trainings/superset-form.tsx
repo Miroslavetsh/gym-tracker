@@ -1,9 +1,12 @@
+import React, { useState } from "react";
+import { Alert, Modal, StyleSheet, Text, View } from "react-native";
+
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ExerciseDto } from "@/types/training";
-import React, { useState } from "react";
-import { Alert, Modal, StyleSheet, Text, View } from "react-native";
+
 import { ExerciseForm } from "./exercise-form";
+import { renderExercise } from "./render-exercises";
 
 type SupersetFormProps = {
   visible: boolean;
@@ -101,13 +104,7 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
                   />
                 </View>
               </View>
-              <View style={styles.exerciseDetails}>
-                <Text style={styles.exerciseInfo}>
-                  {exercise.sets} × {exercise.repetitions}
-                  {exercise.weight > 0 && ` @ ${exercise.weight}кг`}
-                  {exercise.perSide && " (на сторону)"}
-                </Text>
-              </View>
+              {renderExercise(exercise)}
             </Card>
           ))}
 
