@@ -1,26 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { TRAINING_TYPES } from "@/constants/training";
 import { ExerciseService } from "@/services/exerciseService";
-
-const allTypes = "Всі типи";
 
 export default function ExercisesScreen() {
   const [exercises, setExercises] = useState<any[]>([]);
   const [filteredExercises, setFilteredExercises] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState(allTypes);
 
-  const exerciseTypes = [allTypes, ...TRAINING_TYPES];
-
-  const fetchExercises = async () => {
+  const fetchExercises = useCallback(async () => {
     setLoading(true);
     try {
       const data = await ExerciseService.getAllExercises();
@@ -31,7 +24,7 @@ export default function ExercisesScreen() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const filterExercises = () => {
     let filtered = exercises;
@@ -40,10 +33,6 @@ export default function ExercisesScreen() {
       filtered = filtered.filter((exercise) =>
         exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
-    }
-
-    if (selectedType !== allTypes) {
-      filtered = filtered.filter((exercise) => exercise.type === selectedType);
     }
 
     setFilteredExercises(filtered);
@@ -55,23 +44,13 @@ export default function ExercisesScreen() {
 
   useEffect(() => {
     filterExercises();
-  }, [searchQuery, selectedType, exercises]);
+  }, [searchQuery, exercises]);
 
   const renderExercise = ({ item }: { item: any }) => (
     <Card style={styles.exerciseCard}>
       <Text style={styles.exerciseName}>{item.name}</Text>
       {item.type && <Text style={styles.exerciseType}>{item.type}</Text>}
     </Card>
-  );
-
-  const renderTypeButton = (type: string) => (
-    <Button
-      key={type}
-      title={type}
-      variant={selectedType === type ? "primary" : "secondary"}
-      onPress={() => setSelectedType(type)}
-      style={styles.typeButton}
-    />
   );
 
   return (
@@ -99,13 +78,6 @@ export default function ExercisesScreen() {
           onChangeText={setSearchQuery}
           containerStyle={styles.searchInput}
         />
-
-        <View style={styles.typeFilters}>
-          <Text style={styles.filterLabel}>Тип навантаження</Text>
-          <View style={styles.typeButtons}>
-            {exerciseTypes.map(renderTypeButton)}
-          </View>
-        </View>
       </View>
 
       <FlatList
@@ -118,9 +90,7 @@ export default function ExercisesScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              {searchQuery || selectedType !== allTypes
-                ? "Вправи не знайдено"
-                : "Немає вправ"}
+              {searchQuery ? "Вправи не знайдено" : "Немає вправ"}
             </Text>
           </View>
         }
@@ -165,26 +135,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E5E5EA",
   },
   searchInput: {
-    marginBottom: 16,
-  },
-  typeFilters: {
-    marginBottom: 8,
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 8,
-    color: "#000000",
-  },
-  typeButtons: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  typeButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    marginBottom: 8,
+    marginBottom: 0,
   },
   listContainer: {
     padding: 16,

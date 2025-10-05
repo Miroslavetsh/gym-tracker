@@ -1,6 +1,7 @@
-enum TrainingType {
+enum TrainingTypes {
   UPPER = "Верх",
   LEGS = "Ноги",
 }
 
-export const TRAINING_TYPES = [TrainingType.UPPER, TrainingType.LEGS];
+export const ALL_TYPES = "Всі типи";
+export const TRAINING_TYPES = Object.values(TrainingTypes);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -6,22 +6,37 @@ import { RenderExercises } from "@/components/exercises/render-exercises";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { TypeFilter } from "@/components/ui/trainings/type-filter";
+import { ALL_TYPES, TRAINING_TYPES } from "@/constants/training";
+import { filterTraining } from "@/lib/utils/filterUtils";
 import { TrainingService } from "@/services/trainingService";
 import { Training } from "@/types/training";
 
 export default function TrainingsScreen() {
   const [trainings, setTrainings] = useState<Training[]>([]);
+  const [filteredTrainings, setFilteredTrainings] = useState<Training[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedType, setSelectedType] = useState(ALL_TYPES);
 
-  const fetchTrainings = async () => {
+  const fetchTrainings = useCallback(async () => {
     setLoading(true);
     try {
       const data = await TrainingService.getAllTrainings();
       setTrainings(data);
+      setFilteredTrainings(data);
     } catch (error) {
       Alert.alert("Помилка", "Не вдалося завантажити тренування");
     } finally {
       setLoading(false);
+    }
+  }, []);
+
+  const filterTrainings = () => {
+    if (selectedType === ALL_TYPES) {
+      setFilteredTrainings(trainings);
+    } else {
+      const filtered = trainings.filter(filterTraining(selectedType));
+      setFilteredTrainings(filtered);
     }
   };
 
@@ -38,6 +53,9 @@ export default function TrainingsScreen() {
             try {
               await TrainingService.deleteTraining(trainingId);
               setTrainings((prev) => prev.filter((t) => t.id !== trainingId));
+              setFilteredTrainings((prev) =>
+                prev.filter((t) => t.id !== trainingId)
+              );
             } catch (error) {
               Alert.alert("Помилка", "Не вдалося видалити тренування");
             }
@@ -50,6 +68,10 @@ export default function TrainingsScreen() {
   useEffect(() => {
     fetchTrainings();
   }, []);
+
+  useEffect(() => {
+    filterTrainings();
+  }, [selectedType, trainings]);
 
   const renderTraining = ({ item }: { item: Training }) => (
     <Card style={styles.trainingCard}>
@@ -99,8 +121,16 @@ export default function TrainingsScreen() {
         />
       </View>
 
+      <View style={styles.filtersContainer}>
+        <TypeFilter
+          selectedType={selectedType}
+          onTypeChange={setSelectedType}
+          types={[ALL_TYPES, ...TRAINING_TYPES]}
+        />
+      </View>
+
       <FlatList
-        data={trainings}
+        data={filteredTrainings}
         renderItem={renderTraining}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
@@ -108,7 +138,11 @@ export default function TrainingsScreen() {
         onRefresh={fetchTrainings}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>Немає тренувань</Text>
+            <Text style={styles.emptyText}>
+              {selectedType === ALL_TYPES
+                ? "Немає тренувань"
+                : "Тренування не знайдено"}
+            </Text>
           </View>
         }
       />
@@ -142,6 +176,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#000000",
+  },
+  filtersContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E5EA",
   },
   listContainer: {
     padding: 16,
