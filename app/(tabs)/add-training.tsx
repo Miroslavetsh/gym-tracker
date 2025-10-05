@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { ExerciseForm } from "@/components/ExerciseForm";
-import { SupersetForm } from "@/components/SupersetForm";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { ExerciseForm } from "@/components/trainings/exercise-form";
+import { SupersetForm } from "@/components/trainings/superset-form";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Input } from "@/components/ui/input";
 import { TrainingService } from "@/services/trainingService";

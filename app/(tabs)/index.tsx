@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { RenderExercises } from "@/components/exercises/render-exercises";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
+import { RenderExercises } from "@/components/trainings/render-exercises";
+import { TypeFilter } from "@/components/trainings/type-filter";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Input } from "@/components/ui/input";
-import { TypeFilter } from "@/components/ui/trainings/type-filter";
 import { ALL_TYPES, TRAINING_TYPES } from "@/constants/training";
 import { useTrainingFilters } from "@/hooks/use-training-filters";
 import { TrainingService } from "@/services/trainingService";
