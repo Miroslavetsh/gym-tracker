@@ -27,7 +27,7 @@ export default function ExercisesScreen() {
   const fetchExercises = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await ExerciseService.getAllExercises();
+      const data = await ExerciseService.getAll();
       setExercises(data);
     } catch (error) {
       Alert.alert("Помилка", "Не вдалося завантажити вправи");

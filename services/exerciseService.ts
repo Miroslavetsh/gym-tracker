@@ -1,4 +1,4 @@
-import { ApiService } from './api';
+import { ApiService } from "./api";
 
 export interface Exercise {
   id: string;
@@ -7,7 +7,11 @@ export interface Exercise {
 }
 
 export class ExerciseService {
-  static async getAllExercises(): Promise<Exercise[]> {
-    return ApiService.get<Exercise[]>('/exercises');
+  static async getAll(): Promise<Exercise[]> {
+    return ApiService.get<Exercise[]>("/exercises");
+  }
+
+  static async getAllUniq(): Promise<Exercise[]> {
+    return ApiService.get<Exercise[]>("/exercises?uniq=true");
   }
 }
