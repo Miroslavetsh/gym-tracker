@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/common/header";
+import { getListEmpty } from "@/components/trainings/list-empty";
 import { RenderTraining } from "@/components/trainings/render-training";
 import { TypeFilter } from "@/components/trainings/type-filter";
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,7 @@ export default function TrainingsScreen() {
     <SafeAreaView style={styles.container}>
       {error && <View>Alert.alert("Помилка", error)</View>}
       <Header
-        title={`Мої тренування ${totalCount > 0 && `(${totalCount})`}`}
+        title={`Мої тренування ${totalCount > 0 ? `(${totalCount})` : ""}`}
         icon="calendar"
         onToggleFilters={toggleFilters}
         showToggleFiltersButton={true}
@@ -101,15 +102,7 @@ export default function TrainingsScreen() {
         contentContainerStyle={styles.listContainer}
         refreshing={loading}
         onRefresh={refresh}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              {selectedType === ALL_TYPES
-                ? "Немає тренувань"
-                : "Тренування не знайдено"}
-            </Text>
-          </View>
-        }
+        ListEmptyComponent={getListEmpty(loading, selectedType, searchQuery)}
         ListFooterComponent={
           <>
             {hasMore && filteredTrainings.length > 0 && (
