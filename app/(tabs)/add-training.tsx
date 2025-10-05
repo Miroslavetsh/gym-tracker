@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { ActionButtons } from "@/components/trainings/action-buttons";
 import { ExerciseForm } from "@/components/trainings/exercise-form";
 import { RenderExercises } from "@/components/trainings/render-exercises";
 import { SupersetForm } from "@/components/trainings/superset-form";
@@ -147,22 +148,13 @@ export default function AddTrainingScreen() {
             <RenderExercises exercises={exercises} />
           </View>
 
-          <View style={styles.actionButtons}>
-            <Button
-              title="Зберегти"
-              onPress={handleSaveTraining}
-              disabled={loading}
-              style={styles.saveButton}
-              icon="checkmark.circle.fill"
-            />
-            <Button
-              title="Очистити все"
-              variant="secondary"
-              onPress={handleClearAll}
-              style={styles.clearButton}
-              icon="trash"
-            />
-          </View>
+          <ActionButtons
+            onSave={handleSaveTraining}
+            onClear={handleClearAll}
+            loading={loading}
+            saveButtonTitle="Зберегти"
+            clearButtonTitle="Очистити все"
+          />
         </Card>
 
         <ExerciseForm
@@ -281,16 +273,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#8E8E93",
     marginLeft: 8,
-  },
-  actionButtons: {
-    flexDirection: "row",
-    gap: 12,
-    marginTop: 16,
-  },
-  saveButton: {
-    flex: 1,
-  },
-  clearButton: {
-    flex: 1,
   },
 });
