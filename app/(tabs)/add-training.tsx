@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { TRAINING_TYPES } from "@/lib/constants/training";
 import { TrainingService } from "@/services/trainingService";
 import {
   CreateTrainingRequest,
@@ -108,11 +110,12 @@ export default function AddTrainingScreen() {
         </View>
 
         <Card style={styles.formCard}>
-          <Input
+          <Select
             label="Тип тренування *"
-            placeholder="Оберіть тип тренування"
             value={kind}
-            onChangeText={setKind}
+            onValueChange={setKind}
+            options={TRAINING_TYPES}
+            placeholder="Оберіть тип тренування"
           />
 
           <Input
