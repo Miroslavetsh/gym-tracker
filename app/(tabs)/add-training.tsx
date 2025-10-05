@@ -162,27 +162,6 @@ export default function AddTrainingScreen() {
           </View>
         </Card>
 
-        <Card style={styles.previewCard}>
-          <Text style={styles.previewTitle}>
-            Попередній перегляд тренування
-          </Text>
-          {kind && (
-            <View style={styles.previewContent}>
-              <View style={styles.previewTag}>
-                <Text style={styles.previewTagText}>{kind}</Text>
-              </View>
-              <Text style={styles.previewDate}>
-                {new Date(date).toLocaleDateString("uk-UA")}
-              </Text>
-              {exercises.length > 0 && (
-                <Text style={styles.previewExercises}>
-                  Вправ: {exercises.length}
-                </Text>
-              )}
-            </View>
-          )}
-        </Card>
-
         <ExerciseForm
           visible={showExerciseForm}
           onClose={() => setShowExerciseForm(false)}
@@ -310,39 +289,5 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     flex: 1,
-  },
-  previewCard: {
-    margin: 16,
-    marginTop: 0,
-  },
-  previewTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 12,
-    color: "#000000",
-  },
-  previewContent: {
-    alignItems: "flex-start",
-  },
-  previewTag: {
-    backgroundColor: "#007AFF",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginBottom: 8,
-  },
-  previewTagText: {
-    color: "#FFFFFF",
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  previewDate: {
-    fontSize: 16,
-    color: "#000000",
-    marginBottom: 4,
-  },
-  previewExercises: {
-    fontSize: 14,
-    color: "#8E8E93",
   },
 });
