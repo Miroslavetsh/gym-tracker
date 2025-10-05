@@ -106,7 +106,7 @@ export default function AddTrainingScreen() {
             <Text style={styles.title}>Додати тренування</Text>
           </View>
           <Text style={styles.subtitle}>
-            Створіть новий тренувальний день з усіма необхідними деталями
+            Новий тренувальний день з усіма вправами
           </Text>
         </View>
 
