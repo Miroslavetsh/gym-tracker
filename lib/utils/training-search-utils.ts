@@ -29,7 +29,6 @@ export function searchAndFilterTrainings(
   searchQuery: string,
   selectedType: string
 ): Training[] {
-  console.log("searchAndFilterTrainings", searchQuery, selectedType);
   let filtered = filterTrainingsByType(trainings, selectedType);
 
   if (searchQuery.trim()) {
