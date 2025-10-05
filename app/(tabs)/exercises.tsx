@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/common/header";
+import { getListEmpty } from "@/components/common/list-empty";
 import { renderExercise } from "@/components/exercises/exercises-list";
 import { Input } from "@/components/ui/input";
 import { useSearch } from "@/hooks/use-search";
+import { getEmptyExerciseListState } from "@/lib/utils/empty-list-utils";
 import { ExerciseService } from "@/services/exerciseService";
 import { Exercise } from "@/types/training";
 
@@ -64,13 +66,11 @@ export default function ExercisesScreen() {
         contentContainerStyle={styles.listContainer}
         refreshing={loading}
         onRefresh={fetchExercises}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              {searchQuery ? "Вправи не знайдено" : "Немає вправ"}
-            </Text>
-          </View>
-        }
+        ListEmptyComponent={getListEmpty({
+          loading,
+          searchQuery,
+          emptyListFunction: getEmptyExerciseListState,
+        })}
       />
     </SafeAreaView>
   );

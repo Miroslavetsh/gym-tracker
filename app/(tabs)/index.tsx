@@ -3,7 +3,7 @@ import { Alert, FlatList, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/common/header";
-import { getListEmpty } from "@/components/trainings/list-empty";
+import { getListEmpty } from "@/components/common/list-empty";
 import { RenderTraining } from "@/components/trainings/render-training";
 import { TypeFilter } from "@/components/trainings/type-filter";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { usePagination } from "@/hooks/use-pagination";
 import { useTrainingFilters } from "@/hooks/use-training-filters";
 import { ALL_TYPES, TRAINING_TYPES } from "@/lib/constants/training";
+import { getEmptyTrainingListState } from "@/lib/utils/empty-list-utils";
 import { TrainingService } from "@/services/trainingService";
 
 export default function TrainingsScreen() {
@@ -102,7 +103,12 @@ export default function TrainingsScreen() {
         contentContainerStyle={styles.listContainer}
         refreshing={loading}
         onRefresh={refresh}
-        ListEmptyComponent={getListEmpty(loading, selectedType, searchQuery)}
+        ListEmptyComponent={getListEmpty({
+          emptyListFunction: getEmptyTrainingListState,
+          loading,
+          selectedType,
+          searchQuery,
+        })}
         ListFooterComponent={
           <>
             {hasMore && filteredTrainings.length > 0 && (
