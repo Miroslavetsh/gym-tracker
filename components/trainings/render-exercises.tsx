@@ -30,8 +30,8 @@ export const RenderExercises: React.FC<RenderExercisesProps> = ({
         const isSuperset = Array.isArray(exercise);
         if (isSuperset) {
           return (
-            <View key={index} style={styles.exerciseItem}>
-              <Text style={styles.exerciseName}>Сет</Text>
+            <View key={index} style={styles.supersetContainer}>
+              <Text style={styles.supersetTitle}>Сет</Text>
               {exercise.map(renderExercise)}
             </View>
           );
@@ -47,6 +47,18 @@ const styles = StyleSheet.create({
   exerciseItem: {
     marginLeft: 8,
     marginBottom: 4,
+  },
+  supersetTitle: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#007AFF",
+    marginBottom: 4,
+  },
+  supersetContainer: {
+    marginBottom: 8,
+    paddingLeft: 8,
+    borderLeftWidth: 2,
+    borderLeftColor: "#007AFF",
   },
   exerciseName: {
     fontSize: 16,
