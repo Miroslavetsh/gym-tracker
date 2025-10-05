@@ -1,4 +1,4 @@
-export interface Exercise {
+export interface ExerciseDto {
   name: string;
   repetitions: number;
   sets: number;
@@ -6,14 +6,20 @@ export interface Exercise {
   perSide: boolean;
 }
 
+export interface Exercise extends ExerciseDto {
+  id: string;
+}
+
 export type Superset = Exercise[];
+export type SupersetDto = ExerciseDto[];
 
 export type ExerciseOrSuperset = Exercise | Superset;
+export type ExerciseOrSupersetDto = ExerciseDto | SupersetDto;
 
 export interface CreateTrainingRequest {
   kind: string;
   date: string;
-  exercises: ExerciseOrSuperset[];
+  exercises: ExerciseOrSupersetDto[];
   accountId: string;
 }
 
@@ -23,19 +29,7 @@ export interface Training {
   date: string;
   createdAt: string;
   updatedAt: string;
-  exercises?: Array<{
-    id: string;
-    trainingId: string | null;
-    supersetId: string | null;
-    name: string;
-    repetitions: number;
-    sets: number;
-    perSide: boolean;
-    weight: number | null;
-    rawWeight: string | null;
-    createdAt: string;
-    updatedAt: string;
-  }>;
+  exercises?: Array<Exercise>;
 }
 
 export interface PaginationInfo {

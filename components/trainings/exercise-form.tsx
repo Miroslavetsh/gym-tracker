@@ -1,14 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Exercise } from "@/types/training";
+import { ExerciseDto } from "@/types/training";
 import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, View } from "react-native";
 
 type ExerciseFormProps = {
   visible: boolean;
   onClose: () => void;
-  onSave: (exercise: Exercise) => void;
+  onSave: (exercise: ExerciseDto) => void;
 };
 
 export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
@@ -29,7 +29,7 @@ export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
       return;
     }
 
-    const exercise: Exercise = {
+    const exercise: ExerciseDto = {
       name: name.trim(),
       repetitions: parseInt(repetitions),
       sets: parseInt(sets),

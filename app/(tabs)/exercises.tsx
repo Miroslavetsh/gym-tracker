@@ -3,7 +3,7 @@ import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/common/header";
-import { Card } from "@/components/ui/card";
+import { renderExercise } from "@/components/trainings/render-exercises";
 import { Input } from "@/components/ui/input";
 import { useSearch } from "@/hooks/use-search";
 import { ExerciseService } from "@/services/exerciseService";
@@ -40,12 +40,6 @@ export default function ExercisesScreen() {
     fetchExercises();
   }, [fetchExercises]);
 
-  const renderExercise = ({ item }: { item: Exercise }) => (
-    <Card style={styles.exerciseCard}>
-      <Text style={styles.exerciseName}>{item.name}</Text>
-    </Card>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <Header
@@ -65,7 +59,7 @@ export default function ExercisesScreen() {
 
       <FlatList
         data={filteredExercises}
-        renderItem={renderExercise}
+        renderItem={({ item }) => renderExercise(item)}
         keyExtractor={(item) => Object.values(item).join("-")}
         contentContainerStyle={styles.listContainer}
         refreshing={loading}

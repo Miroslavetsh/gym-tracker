@@ -1,23 +1,25 @@
-import { Training } from "@/types/training";
+import { Exercise } from "@/types/training";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-type Exercises = NonNullable<Training["exercises"]>;
-
-const renderExercise = (exercise: Exercises[number]) => (
+export const renderExercise = (exercise: Exercise) => (
   <View key={exercise.id} style={styles.exerciseItem}>
     <Text style={styles.exerciseName}>{exercise.name}</Text>
     <Text style={styles.exerciseDetails}>
       {exercise.sets} × {exercise.repetitions}
-      {exercise.weight && ` @ ${exercise.weight}кг`}
-      {exercise.perSide && " (на сторону)"}
+      {exercise.perSide && "по"}
+      {exercise.weight && `${exercise.weight}кг`}
     </Text>
   </View>
 );
 
-export const RenderExercises: React.FC<{
-  exercises: Exercises;
-}> = ({ exercises }) => {
+type RenderExercisesProps = {
+  exercises: Exercise[];
+};
+
+export const RenderExercises: React.FC<RenderExercisesProps> = ({
+  exercises,
+}) => {
   return (
     <View>
       {exercises?.map((exercise, index) => {
@@ -30,6 +32,7 @@ export const RenderExercises: React.FC<{
             </View>
           );
         }
+
         return renderExercise(exercise);
       })}
     </View>

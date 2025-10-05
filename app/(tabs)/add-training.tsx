@@ -11,23 +11,23 @@ import { Input } from "@/components/ui/input";
 import { TrainingService } from "@/services/trainingService";
 import {
   CreateTrainingRequest,
-  Exercise,
-  ExerciseOrSuperset,
+  ExerciseDto,
+  ExerciseOrSupersetDto,
 } from "@/types/training";
 
 export default function AddTrainingScreen() {
   const [kind, setKind] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [exercises, setExercises] = useState<ExerciseOrSuperset[]>([]);
+  const [exercises, setExercises] = useState<ExerciseOrSupersetDto[]>([]);
   const [loading, setLoading] = useState(false);
   const [showExerciseForm, setShowExerciseForm] = useState(false);
   const [showSupersetForm, setShowSupersetForm] = useState(false);
 
-  const handleAddExercise = (exercise: Exercise) => {
+  const handleAddExercise = (exercise: ExerciseDto) => {
     setExercises((prev) => [...prev, exercise]);
   };
 
-  const handleAddSuperset = (superset: Exercise[]) => {
+  const handleAddSuperset = (superset: ExerciseDto[]) => {
     setExercises((prev) => [...prev, superset]);
   };
 
@@ -140,7 +140,7 @@ export default function AddTrainingScreen() {
               />
             </View>
 
-            {exercises.map((item: ExerciseOrSuperset, index) => (
+            {exercises.map((item: ExerciseOrSupersetDto, index) => (
               <View key={index} style={styles.exerciseItem}>
                 <View style={styles.exerciseHeader}>
                   <Text style={styles.exerciseTitle}>
