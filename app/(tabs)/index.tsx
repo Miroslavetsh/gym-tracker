@@ -14,7 +14,6 @@ import { TrainingService } from "@/services/trainingService";
 
 export default function TrainingsScreen() {
   const [filtersVisible, setFiltersVisible] = useState(true);
-
   const {
     trainings,
     loading,
@@ -65,8 +64,9 @@ export default function TrainingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {error && <View>Alert.alert("Помилка", error)</View>}
       <Header
-        title="Мої тренування"
+        title={`Мої тренування ${totalCount > 0 && `(${totalCount})`}`}
         icon="calendar"
         onClear={clearFilters}
         onToggleFilters={toggleFilters}
@@ -169,5 +169,15 @@ const styles = StyleSheet.create({
   loadMoreButton: {
     paddingHorizontal: 24,
     paddingVertical: 12,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 50,
+  },
+  errorText: {
+    fontSize: 18,
+    color: "#8E8E93",
   },
 });
