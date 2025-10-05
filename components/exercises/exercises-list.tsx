@@ -21,9 +21,7 @@ type ExercisesListProps = {
   exercises: Exercise[] | ExerciseDto[] | ExerciseOrSupersetDto[];
 };
 
-export const ExercisesList: React.FC<ExercisesListProps> = ({
-  exercises,
-}) => (
+export const ExercisesList: React.FC<ExercisesListProps> = ({ exercises }) => (
   <View>
     {exercises?.map((exercise, index) => {
       const isSuperset = Array.isArray(exercise);
