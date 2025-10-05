@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Training } from "@/types/training";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { RenderExercises } from "./render-exercises";
 
 interface RenderTrainingProps {
   item: Training;
@@ -25,38 +26,7 @@ export function RenderTraining({
       {item.exercises && item.exercises.length > 0 && (
         <View style={styles.exercisesContainer}>
           <Text style={styles.exercisesTitle}>Вправи:</Text>
-          {item.exercises.map((exercise, index) => {
-            if (Array.isArray(exercise)) {
-              return (
-                <View key={index} style={styles.supersetContainer}>
-                  <Text style={styles.supersetTitle}>Сет</Text>
-                  {exercise.map((ex, exIndex) => (
-                    <View key={exIndex} style={styles.exerciseItem}>
-                      <Text style={styles.exerciseName}>{ex.name}</Text>
-                      <Text style={styles.exerciseDetails}>
-                        {ex.sets} × {ex.repetitions}
-                        {ex.weight && ex.weight > 0 && ` @ ${ex.weight}кг`}
-                        {ex.perSide && " (на сторону)"}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              );
-            } else {
-              return (
-                <View key={index} style={styles.exerciseItem}>
-                  <Text style={styles.exerciseName}>{exercise.name}</Text>
-                  <Text style={styles.exerciseDetails}>
-                    {exercise.sets} × {exercise.repetitions}
-                    {exercise.weight &&
-                      exercise.weight > 0 &&
-                      ` @ ${exercise.weight}кг`}
-                    {exercise.perSide && " (на сторону)"}
-                  </Text>
-                </View>
-              );
-            }
-          })}
+          <RenderExercises exercises={item.exercises} />
         </View>
       )}
 

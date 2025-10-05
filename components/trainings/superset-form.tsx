@@ -1,15 +1,14 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { ExerciseDto } from "@/types/training";
 import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, View } from "react-native";
+import { RenderExercises } from "./render-exercises";
 
-interface SupersetFormProps {
+type SupersetFormProps = {
   visible: boolean;
   onClose: () => void;
   onSave: (exercises: ExerciseDto[]) => void;
-}
+};
 
 export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
   const [exercises, setExercises] = useState<ExerciseDto[]>([]);
@@ -81,77 +80,7 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
             />
           </View>
 
-          {exercises.map((exercise, index) => (
-            <Card key={index} style={styles.exerciseCard}>
-              <View style={styles.exerciseHeader}>
-                <Text style={styles.exerciseTitle}>
-                  Вправа {index + 1} в сеті
-                </Text>
-                <Button
-                  title="Видалити з сету"
-                  variant="danger"
-                  onPress={() => removeExercise(index)}
-                  style={styles.deleteButton}
-                />
-              </View>
-
-              <Input
-                label="Назва вправи *"
-                placeholder="Наприклад: Присідання зі штан"
-                value={exercise.name}
-                onChangeText={(value) => updateExercise(index, "name", value)}
-              />
-
-              <Input
-                label="Кількість сетів *"
-                placeholder="0"
-                value={exercise.sets.toString()}
-                onChangeText={(value) =>
-                  updateExercise(index, "sets", parseInt(value) || 0)
-                }
-                keyboardType="numeric"
-              />
-
-              <Input
-                label="Повторення *"
-                placeholder="0"
-                value={exercise.repetitions.toString()}
-                onChangeText={(value) =>
-                  updateExercise(index, "repetitions", parseInt(value) || 0)
-                }
-                keyboardType="numeric"
-              />
-
-              <Input
-                label="Вага (кг)"
-                placeholder="0"
-                value={exercise.weight.toString()}
-                onChangeText={(value) =>
-                  updateExercise(index, "weight", parseFloat(value) || 0)
-                }
-                keyboardType="numeric"
-              />
-
-              <View style={styles.checkboxContainer}>
-                <Button
-                  title={
-                    exercise.perSide
-                      ? "✓ Навантаження на кожну сторону"
-                      : "Навантаження на кожну сторону"
-                  }
-                  variant={exercise.perSide ? "primary" : "secondary"}
-                  onPress={() =>
-                    updateExercise(index, "perSide", !exercise.perSide)
-                  }
-                  style={styles.checkbox}
-                />
-                <Text style={styles.checkboxDescription}>
-                  Встановіть, якщо вказана вага розрахована на одну сторону
-                  (наприклад, гантелі)
-                </Text>
-              </View>
-            </Card>
-          ))}
+          <RenderExercises exercises={exercises} />
 
           {exercises.length > 0 && (
             <View style={styles.actionButtons}>

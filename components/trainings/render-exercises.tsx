@@ -1,4 +1,4 @@
-import { Exercise, ExerciseDto } from "@/types/training";
+import { Exercise, ExerciseDto, ExerciseOrSupersetDto } from "@/types/training";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -11,15 +11,14 @@ export const renderExercise = (exercise: Exercise | ExerciseDto) => (
   <View key={getExerciseKey(exercise)} style={styles.exerciseItem}>
     <Text style={styles.exerciseName}>{exercise.name}</Text>
     <Text style={styles.exerciseDetails}>
-      {exercise.sets} × {exercise.repetitions}
-      {exercise.perSide && " по "}
+      {exercise.sets} × {exercise.repetitions} {exercise.perSide && "по "}
       {exercise.weight && `${exercise.weight}кг`}
     </Text>
   </View>
 );
 
 type RenderExercisesProps = {
-  exercises: Exercise[] | ExerciseDto[];
+  exercises: Exercise[] | ExerciseDto[] | ExerciseOrSupersetDto[];
 };
 
 export const RenderExercises: React.FC<RenderExercisesProps> = ({

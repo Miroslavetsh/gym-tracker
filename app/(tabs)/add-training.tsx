@@ -3,7 +3,10 @@ import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ExerciseForm } from "@/components/trainings/exercise-form";
-import { renderExercise } from "@/components/trainings/render-exercises";
+import {
+  renderExercise,
+  RenderExercises,
+} from "@/components/trainings/render-exercises";
 import { SupersetForm } from "@/components/trainings/superset-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -141,44 +144,7 @@ export default function AddTrainingScreen() {
               />
             </View>
 
-            {exercises.map((item: ExerciseOrSupersetDto, index) => (
-              <View key={index} style={styles.exerciseItem}>
-                <View style={styles.exerciseHeader}>
-                  <Text style={styles.exerciseTitle}>
-                    {Array.isArray(item)
-                      ? `Сет ${index + 1}`
-                      : `Вправа ${index + 1}`}
-                  </Text>
-                  <Button
-                    title="Видалити"
-                    variant="danger"
-                    onPress={() => handleRemoveExercise(index)}
-                    style={styles.deleteButton}
-                    icon="trash"
-                  />
-                </View>
-
-                {Array.isArray(item) ? (
-                  <View style={styles.supersetContent}>
-                    <Text style={styles.supersetTitle}>
-                      Вправи в сеті ({item.length})
-                    </Text>
-                    {item.map((exercise, exerciseIndex) =>
-                      renderExercise(exercise)
-                    )}
-                  </View>
-                ) : (
-                  <View style={styles.exerciseContent}>
-                    <Text style={styles.exerciseName}>{item.name}</Text>
-                    <Text style={styles.exerciseDetails}>
-                      {item.sets} × {item.repetitions}
-                      {item.weight > 0 && ` @ ${item.weight}кг`}
-                      {item.perSide && " (на сторону)"}
-                    </Text>
-                  </View>
-                )}
-              </View>
-            ))}
+            <RenderExercises exercises={exercises} />
           </View>
 
           <View style={styles.actionButtons}>
