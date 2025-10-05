@@ -1,8 +1,4 @@
-import {
-  CreateTrainingRequest,
-  Training,
-  TrainingsResponse,
-} from "../types/training";
+import { CreateTrainingRequest, Training, TrainingsResponse } from "../types/training";
 import { ApiService } from "./api";
 
 export class TrainingService {
@@ -22,10 +18,7 @@ export class TrainingService {
   }
 
   static async createTraining(data: CreateTrainingRequest): Promise<Training> {
-    return ApiService.post<Training>("/trainings", {
-      ...data,
-      kind: data.kind.toLowerCase(),
-    });
+    return ApiService.post<Training>("/trainings", data);
   }
 
   static async deleteTraining(trainingId: string): Promise<void> {
