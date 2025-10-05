@@ -1,4 +1,8 @@
-import { CreateTrainingRequest, Training, TrainingsResponse } from "../types/training";
+import {
+  CreateTrainingRequest,
+  Training,
+  TrainingsResponse,
+} from "../types/training";
 import { ApiService } from "./api";
 
 export class TrainingService {
