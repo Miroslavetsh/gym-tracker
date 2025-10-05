@@ -3,6 +3,7 @@ import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ExerciseForm } from "@/components/trainings/exercise-form";
+import { renderExercise } from "@/components/trainings/render-exercises";
 import { SupersetForm } from "@/components/trainings/superset-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -162,16 +163,9 @@ export default function AddTrainingScreen() {
                     <Text style={styles.supersetTitle}>
                       Вправи в сеті ({item.length})
                     </Text>
-                    {item.map((exercise, exerciseIndex) => (
-                      <View key={exerciseIndex} style={styles.supersetExercise}>
-                        <Text style={styles.exerciseName}>{exercise.name}</Text>
-                        <Text style={styles.exerciseDetails}>
-                          {exercise.sets} × {exercise.repetitions}
-                          {exercise.weight > 0 && ` @ ${exercise.weight}кг`}
-                          {exercise.perSide && " (на сторону)"}
-                        </Text>
-                      </View>
-                    ))}
+                    {item.map((exercise, exerciseIndex) =>
+                      renderExercise(exercise)
+                    )}
                   </View>
                 ) : (
                   <View style={styles.exerciseContent}>

@@ -17,6 +17,7 @@ interface ButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
   disabled?: boolean;
+  loading?: boolean;
   icon?: string;
   iconSize?: number;
 }
@@ -28,20 +29,21 @@ export function Button({
   style,
   textStyle,
   disabled = false,
+  loading = false,
   icon,
   iconSize = 16,
 }: ButtonProps) {
   const buttonStyle = [
     styles.button,
     styles[variant],
-    disabled && styles.disabled,
+    (disabled || loading) && styles.disabled,
     style,
   ];
 
   const buttonTextStyle = [
     styles.text,
     styles[`${variant}Text`],
-    disabled && styles.disabledText,
+    (disabled || loading) && styles.disabledText,
     textStyle,
   ];
 
@@ -49,16 +51,16 @@ export function Button({
     <TouchableOpacity
       style={buttonStyle}
       onPress={onPress}
-      disabled={disabled}
+      disabled={disabled || loading}
       activeOpacity={0.7}
     >
       <View style={styles.content}>
-        {icon && (
+        {icon && !loading && (
           <IconSymbol
             name={icon as SymbolViewProps["name"]}
             size={iconSize}
             color={
-              disabled
+              disabled || loading
                 ? "#8E8E93"
                 : variant === "primary" ||
                   variant === "secondary" ||
@@ -69,7 +71,9 @@ export function Button({
             style={styles.icon}
           />
         )}
-        <Text style={buttonTextStyle}>{title}</Text>
+        <Text style={buttonTextStyle}>
+          {loading ? "Завантаження..." : title}
+        </Text>
       </View>
     </TouchableOpacity>
   );

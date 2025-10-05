@@ -1,20 +1,25 @@
-import { Exercise } from "@/types/training";
+import { Exercise, ExerciseDto } from "@/types/training";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export const renderExercise = (exercise: Exercise) => (
-  <View key={exercise.id} style={styles.exerciseItem}>
+const getExerciseKey = (exercise: Exercise | ExerciseDto) => {
+  if ("id" in exercise) return exercise.id;
+  return exercise?.name;
+};
+
+export const renderExercise = (exercise: Exercise | ExerciseDto) => (
+  <View key={getExerciseKey(exercise)} style={styles.exerciseItem}>
     <Text style={styles.exerciseName}>{exercise.name}</Text>
     <Text style={styles.exerciseDetails}>
       {exercise.sets} × {exercise.repetitions}
-      {exercise.perSide && "по"}
+      {exercise.perSide && " по "}
       {exercise.weight && `${exercise.weight}кг`}
     </Text>
   </View>
 );
 
 type RenderExercisesProps = {
-  exercises: Exercise[];
+  exercises: Exercise[] | ExerciseDto[];
 };
 
 export const RenderExercises: React.FC<RenderExercisesProps> = ({
