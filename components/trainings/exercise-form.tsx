@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ComboBox } from "@/components/ui/combo-box";
 import { Input } from "@/components/ui/input";
+import { ExerciseService } from "@/services/exerciseService";
 import { ExerciseDto } from "@/types/training";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Modal, StyleSheet, Text, View } from "react-native";
 
 type ExerciseFormProps = {
@@ -18,6 +20,29 @@ export function ExerciseForm({ visible, onClose, onSave, initialData }: Exercise
   const [sets, setSets] = useState(initialData?.sets?.toString() || "");
   const [weight, setWeight] = useState(initialData?.weight?.toString() || "");
   const [perSide, setPerSide] = useState(initialData?.perSide || false);
+  const [exerciseOptions, setExerciseOptions] = useState<string[]>([]);
+  const [loadingExercises, setLoadingExercises] = useState(false);
+
+  // Загружаем список упражнений при открытии формы
+  useEffect(() => {
+    if (visible) {
+      loadExerciseOptions();
+    }
+  }, [visible]);
+
+  const loadExerciseOptions = async () => {
+    setLoadingExercises(true);
+    try {
+      const exercises = await ExerciseService.getAllUniq();
+      const exerciseNames = exercises.map(exercise => exercise.name);
+      setExerciseOptions(exerciseNames);
+    } catch (error) {
+      console.error("Failed to load exercises:", error);
+      setExerciseOptions([]);
+    } finally {
+      setLoadingExercises(false);
+    }
+  };
 
   const handleSave = () => {
     if (!name.trim()) {
@@ -66,11 +91,13 @@ export function ExerciseForm({ visible, onClose, onSave, initialData }: Exercise
         </View>
 
         <Card style={styles.formCard}>
-          <Input
+          <ComboBox
             label="Назва вправи *"
-            placeholder="Наприклад: Присідання зі штангою"
             value={name}
-            onChangeText={setName}
+            onValueChange={setName}
+            options={exerciseOptions}
+            placeholder="Наприклад: Присідання зі штангою"
+            loading={loadingExercises}
           />
 
           <Input
