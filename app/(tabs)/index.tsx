@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Input } from "@/components/ui/input";
-import { ALL_TYPES, TRAINING_TYPES } from "@/constants/training";
 import { useTrainingFilters } from "@/hooks/use-training-filters";
+import { ALL_TYPES, TRAINING_TYPES } from "@/lib/constants/training";
 import { TrainingService } from "@/services/trainingService";
 import { Training } from "@/types/training";
 
