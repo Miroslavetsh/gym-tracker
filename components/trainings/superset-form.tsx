@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { ExerciseDto } from "@/types/training";
 import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, View } from "react-native";
-import { RenderExercises } from "./render-exercises";
+import { ExerciseForm } from "./exercise-form";
 
 type SupersetFormProps = {
   visible: boolean;
@@ -12,50 +13,49 @@ type SupersetFormProps = {
 
 export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
   const [exercises, setExercises] = useState<ExerciseDto[]>([]);
+  const [showExerciseForm, setShowExerciseForm] = useState(false);
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   const addExercise = () => {
-    const newExercise: ExerciseDto = {
-      name: "",
-      repetitions: 0,
-      sets: 0,
-      weight: 0,
-      perSide: false,
-    };
-    setExercises((prev) => [...prev, newExercise]);
+    setEditingIndex(null);
+    setShowExerciseForm(true);
   };
 
-  const updateExercise = (
-    index: number,
-    field: keyof ExerciseDto,
-    value: any
-  ) => {
-    setExercises((prev) =>
-      prev.map((exercise, i) =>
-        i === index ? { ...exercise, [field]: value } : exercise
-      )
-    );
+  const editExercise = (index: number) => {
+    setEditingIndex(index);
+    setShowExerciseForm(true);
   };
 
   const removeExercise = (index: number) => {
     setExercises((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSave = () => {
-    const validExercises = exercises.filter(
-      (ex) => ex.name.trim() && ex.repetitions > 0 && ex.sets > 0
-    );
+  const handleExerciseSave = (exercise: ExerciseDto) => {
+    if (editingIndex !== null) {
+      setExercises((prev) =>
+        prev.map((ex, i) => (i === editingIndex ? exercise : ex))
+      );
+    } else {
+      setExercises((prev) => [...prev, exercise]);
+    }
+    setShowExerciseForm(false);
+    setEditingIndex(null);
+  };
 
-    if (validExercises.length === 0) {
+  const handleSave = () => {
+    if (exercises.length === 0) {
       Alert.alert("Помилка", "Додайте хоча б одну вправу до сету");
       return;
     }
 
-    onSave(validExercises);
+    onSave(exercises);
     handleClose();
   };
 
   const handleClose = () => {
     setExercises([]);
+    setShowExerciseForm(false);
+    setEditingIndex(null);
     onClose();
   };
 
@@ -80,7 +80,36 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
             />
           </View>
 
-          <RenderExercises exercises={exercises} />
+          {exercises.map((exercise, index) => (
+            <Card key={index} style={styles.exerciseCard}>
+              <View style={styles.exerciseHeader}>
+                <Text style={styles.exerciseTitle}>
+                  Вправа {index + 1}: {exercise.name}
+                </Text>
+                <View style={styles.exerciseActions}>
+                  <Button
+                    title="Редагувати"
+                    variant="secondary"
+                    onPress={() => editExercise(index)}
+                    style={styles.editButton}
+                  />
+                  <Button
+                    title="Видалити"
+                    variant="danger"
+                    onPress={() => removeExercise(index)}
+                    style={styles.deleteButton}
+                  />
+                </View>
+              </View>
+              <View style={styles.exerciseDetails}>
+                <Text style={styles.exerciseInfo}>
+                  {exercise.sets} × {exercise.repetitions}
+                  {exercise.weight > 0 && ` @ ${exercise.weight}кг`}
+                  {exercise.perSide && " (на сторону)"}
+                </Text>
+              </View>
+            </Card>
+          ))}
 
           {exercises.length > 0 && (
             <View style={styles.actionButtons}>
@@ -93,6 +122,18 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
           )}
         </View>
       </View>
+
+      <ExerciseForm
+        visible={showExerciseForm}
+        onClose={() => {
+          setShowExerciseForm(false);
+          setEditingIndex(null);
+        }}
+        onSave={handleExerciseSave}
+        initialData={
+          editingIndex !== null ? exercises[editingIndex] : undefined
+        }
+      />
     </Modal>
   );
 }
@@ -140,21 +181,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#000000",
+    flex: 1,
+    marginRight: 8,
+  },
+  exerciseActions: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  editButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
   },
   deleteButton: {
     paddingHorizontal: 8,
     paddingVertical: 4,
   },
-  checkboxContainer: {
+  exerciseDetails: {
     marginTop: 8,
   },
-  checkbox: {
-    marginBottom: 8,
-  },
-  checkboxDescription: {
-    fontSize: 12,
+  exerciseInfo: {
+    fontSize: 14,
     color: "#8E8E93",
-    marginLeft: 8,
   },
   actionButtons: {
     marginTop: 16,

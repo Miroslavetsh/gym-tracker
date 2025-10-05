@@ -9,14 +9,15 @@ type ExerciseFormProps = {
   visible: boolean;
   onClose: () => void;
   onSave: (exercise: ExerciseDto) => void;
+  initialData?: ExerciseDto;
 };
 
-export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
-  const [name, setName] = useState("");
-  const [repetitions, setRepetitions] = useState("");
-  const [sets, setSets] = useState("");
-  const [weight, setWeight] = useState("");
-  const [perSide, setPerSide] = useState(false);
+export function ExerciseForm({ visible, onClose, onSave, initialData }: ExerciseFormProps) {
+  const [name, setName] = useState(initialData?.name || "");
+  const [repetitions, setRepetitions] = useState(initialData?.repetitions?.toString() || "");
+  const [sets, setSets] = useState(initialData?.sets?.toString() || "");
+  const [weight, setWeight] = useState(initialData?.weight?.toString() || "");
+  const [perSide, setPerSide] = useState(initialData?.perSide || false);
 
   const handleSave = () => {
     if (!name.trim()) {
@@ -42,11 +43,11 @@ export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
   };
 
   const handleClose = () => {
-    setName("");
-    setRepetitions("");
-    setSets("");
-    setWeight("");
-    setPerSide(false);
+    setName(initialData?.name || "");
+    setRepetitions(initialData?.repetitions?.toString() || "");
+    setSets(initialData?.sets?.toString() || "");
+    setWeight(initialData?.weight?.toString() || "");
+    setPerSide(initialData?.perSide || false);
     onClose();
   };
 
@@ -58,7 +59,9 @@ export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
     >
       <View style={styles.container}>
         <View style={styles.header}>
-          <Text style={styles.title}>Додати вправу</Text>
+          <Text style={styles.title}>
+            {initialData ? "Редагувати вправу" : "Додати вправу"}
+          </Text>
           <Button title="Скасувати" variant="secondary" onPress={handleClose} />
         </View>
 
@@ -113,7 +116,7 @@ export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
 
           <View style={styles.actionButtons}>
             <Button
-              title="Зберегти вправу"
+              title={initialData ? "Оновити вправу" : "Зберегти вправу"}
               onPress={handleSave}
               style={styles.saveButton}
             />
