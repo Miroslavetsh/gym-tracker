@@ -25,6 +25,7 @@ export function ActionButtons({
   return (
     <View style={styles.container}>
       <Button
+        variant="success"
         title={saveButtonTitle}
         onPress={onSave}
         disabled={loading}
@@ -33,7 +34,7 @@ export function ActionButtons({
       />
       <Button
         title={clearButtonTitle}
-        variant="secondary"
+        variant="danger"
         onPress={onClear}
         style={styles.clearButton}
         icon={clearButtonIcon}

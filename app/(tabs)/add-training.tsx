@@ -138,7 +138,7 @@ export default function AddTrainingScreen() {
               />
               <Button
                 title="Додати сет"
-                variant="secondary"
+                variant="success"
                 onPress={() => setShowSupersetForm(true)}
                 style={styles.addButton}
                 icon="link"

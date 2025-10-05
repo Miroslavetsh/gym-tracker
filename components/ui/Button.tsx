@@ -13,7 +13,7 @@ import { IconSymbol } from "./icon-symbol";
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary" | "danger" | "loading" | "success";
   style?: ViewStyle;
   textStyle?: TextStyle;
   disabled?: boolean;
@@ -64,7 +64,9 @@ export function Button({
                 ? "#8E8E93"
                 : variant === "primary" ||
                   variant === "secondary" ||
-                  variant === "danger"
+                  variant === "danger" ||
+                  variant === "loading" ||
+                  variant === "success"
                 ? "#FFFFFF"
                 : "#000000"
             }
@@ -104,6 +106,12 @@ const styles = StyleSheet.create({
   danger: {
     backgroundColor: "#FF3B30",
   },
+  loading: {
+    backgroundColor: "#007AFF",
+  },
+  success: {
+    backgroundColor: "#11BF01",
+  },
   disabled: {
     backgroundColor: "#C7C7CC",
   },
@@ -122,5 +130,11 @@ const styles = StyleSheet.create({
   },
   disabledText: {
     color: "#8E8E93",
+  },
+  loadingText: {
+    color: "#FFFFFF",
+  },
+  successText: {
+    color: "#FFFFFF",
   },
 });
