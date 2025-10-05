@@ -6,8 +6,8 @@ import { ExerciseForm } from "@/components/ExerciseForm";
 import { SupersetForm } from "@/components/SupersetForm";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Input } from "@/components/ui/input";
 import { TrainingService } from "@/services/trainingService";
 import {
   CreateTrainingRequest,

@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
+import { Input } from '@/components/ui/input';
 import { Exercise } from '@/types/training';
 import React, { useState } from 'react';
 import { Alert, Modal, StyleSheet, Text, View } from 'react-native';

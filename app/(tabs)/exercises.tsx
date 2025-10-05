@@ -3,22 +3,30 @@ import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Card } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Input } from "@/components/ui/input";
+import { useSearch } from "@/hooks/use-search";
 import { ExerciseService } from "@/services/exerciseService";
+import { Exercise } from "@/types/training";
 
 export default function ExercisesScreen() {
   const [exercises, setExercises] = useState<any[]>([]);
-  const [filteredExercises, setFilteredExercises] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+
+  const {
+    searchQuery,
+    setSearchQuery,
+    filteredData: filteredExercises,
+  } = useSearch<Exercise>({
+    data: exercises,
+    searchFields: ["name", "weight", "repetitions"],
+  });
 
   const fetchExercises = useCallback(async () => {
     setLoading(true);
     try {
       const data = await ExerciseService.getAllExercises();
       setExercises(data);
-      setFilteredExercises(data);
     } catch (error) {
       Alert.alert("Помилка", "Не вдалося завантажити вправи");
     } finally {
@@ -26,30 +34,13 @@ export default function ExercisesScreen() {
     }
   }, []);
 
-  const filterExercises = () => {
-    let filtered = exercises;
-
-    if (searchQuery.trim()) {
-      filtered = filtered.filter((exercise) =>
-        exercise.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
-
-    setFilteredExercises(filtered);
-  };
-
   useEffect(() => {
     fetchExercises();
-  }, []);
+  }, [fetchExercises]);
 
-  useEffect(() => {
-    filterExercises();
-  }, [searchQuery, exercises]);
-
-  const renderExercise = ({ item }: { item: any }) => (
+  const renderExercise = ({ item }: { item: Exercise }) => (
     <Card style={styles.exerciseCard}>
       <Text style={styles.exerciseName}>{item.name}</Text>
-      {item.type && <Text style={styles.exerciseType}>{item.type}</Text>}
     </Card>
   );
 
@@ -83,7 +74,7 @@ export default function ExercisesScreen() {
       <FlatList
         data={filteredExercises}
         renderItem={renderExercise}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => Object.values(item).join("-")}
         contentContainerStyle={styles.listContainer}
         refreshing={loading}
         onRefresh={fetchExercises}

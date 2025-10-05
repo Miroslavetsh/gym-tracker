@@ -6,39 +6,37 @@ import { RenderExercises } from "@/components/exercises/render-exercises";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { Input } from "@/components/ui/input";
 import { TypeFilter } from "@/components/ui/trainings/type-filter";
 import { ALL_TYPES, TRAINING_TYPES } from "@/constants/training";
-import { filterTraining } from "@/lib/utils/filterUtils";
+import { useTrainingFilters } from "@/hooks/use-training-filters";
 import { TrainingService } from "@/services/trainingService";
 import { Training } from "@/types/training";
 
 export default function TrainingsScreen() {
   const [trainings, setTrainings] = useState<Training[]>([]);
-  const [filteredTrainings, setFilteredTrainings] = useState<Training[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedType, setSelectedType] = useState(ALL_TYPES);
+
+  const {
+    selectedType,
+    setSelectedType,
+    searchQuery,
+    setSearchQuery,
+    filteredTrainings,
+    clearFilters,
+  } = useTrainingFilters({ trainings });
 
   const fetchTrainings = useCallback(async () => {
     setLoading(true);
     try {
       const data = await TrainingService.getAllTrainings();
       setTrainings(data);
-      setFilteredTrainings(data);
     } catch (error) {
       Alert.alert("Помилка", "Не вдалося завантажити тренування");
     } finally {
       setLoading(false);
     }
   }, []);
-
-  const filterTrainings = () => {
-    if (selectedType === ALL_TYPES) {
-      setFilteredTrainings(trainings);
-    } else {
-      const filtered = trainings.filter(filterTraining(selectedType));
-      setFilteredTrainings(filtered);
-    }
-  };
 
   const handleDeleteTraining = async (trainingId: string) => {
     Alert.alert(
@@ -53,9 +51,6 @@ export default function TrainingsScreen() {
             try {
               await TrainingService.deleteTraining(trainingId);
               setTrainings((prev) => prev.filter((t) => t.id !== trainingId));
-              setFilteredTrainings((prev) =>
-                prev.filter((t) => t.id !== trainingId)
-              );
             } catch (error) {
               Alert.alert("Помилка", "Не вдалося видалити тренування");
             }
@@ -67,11 +62,7 @@ export default function TrainingsScreen() {
 
   useEffect(() => {
     fetchTrainings();
-  }, []);
-
-  useEffect(() => {
-    filterTrainings();
-  }, [selectedType, trainings]);
+  }, [fetchTrainings]);
 
   const renderTraining = ({ item }: { item: Training }) => (
     <Card style={styles.trainingCard}>
@@ -113,12 +104,24 @@ export default function TrainingsScreen() {
           />
           <Text style={styles.title}>Мої тренування</Text>
         </View>
-        <Button
-          title="Оновити"
-          onPress={fetchTrainings}
-          disabled={loading}
-          icon="arrow.clockwise"
-        />
+        <View style={styles.headerButtons}>
+          <Button
+            title="Оновити"
+            onPress={fetchTrainings}
+            disabled={loading}
+            icon="arrow.clockwise"
+            style={styles.refreshButton}
+          />
+          {(selectedType !== ALL_TYPES || searchQuery) && (
+            <Button
+              title="Очистити"
+              onPress={clearFilters}
+              variant="secondary"
+              icon="trash"
+              style={styles.clearButton}
+            />
+          )}
+        </View>
       </View>
 
       <View style={styles.filtersContainer}>
@@ -126,6 +129,14 @@ export default function TrainingsScreen() {
           selectedType={selectedType}
           onTypeChange={setSelectedType}
           types={[ALL_TYPES, ...TRAINING_TYPES]}
+        />
+
+        <Input
+          label="Пошук тренування"
+          placeholder="Пошук по тренуваннях..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          containerStyle={styles.searchInput}
         />
       </View>
 
@@ -177,12 +188,27 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#000000",
   },
+  headerButtons: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  refreshButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  clearButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
   filtersContainer: {
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5EA",
+  },
+  searchInput: {
+    marginTop: 12,
   },
   listContainer: {
     padding: 16,
