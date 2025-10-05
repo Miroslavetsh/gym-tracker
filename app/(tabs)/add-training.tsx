@@ -3,10 +3,7 @@ import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { ExerciseForm } from "@/components/trainings/exercise-form";
-import {
-  renderExercise,
-  RenderExercises,
-} from "@/components/trainings/render-exercises";
+import { RenderExercises } from "@/components/trainings/render-exercises";
 import { SupersetForm } from "@/components/trainings/superset-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";

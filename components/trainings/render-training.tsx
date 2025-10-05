@@ -5,10 +5,10 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { RenderExercises } from "./render-exercises";
 
-interface RenderTrainingProps {
+type RenderTrainingProps = {
   item: Training;
   handleDeleteTraining: (id: string) => void;
-}
+};
 
 export function RenderTraining({
   item,
@@ -70,32 +70,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 8,
     color: "#000000",
-  },
-  supersetContainer: {
-    marginBottom: 8,
-    paddingLeft: 8,
-    borderLeftWidth: 2,
-    borderLeftColor: "#007AFF",
-  },
-  supersetTitle: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#007AFF",
-    marginBottom: 4,
-  },
-  exerciseItem: {
-    marginLeft: 8,
-    marginBottom: 4,
-  },
-  exerciseName: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#000000",
-  },
-  exerciseDetails: {
-    fontSize: 14,
-    color: "#8E8E93",
-    marginLeft: 8,
   },
   trainingActions: {
     flexDirection: "row",
