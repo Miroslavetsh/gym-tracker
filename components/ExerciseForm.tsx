@@ -1,31 +1,31 @@
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { Exercise } from '@/types/training';
-import React, { useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, View } from 'react-native';
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Exercise } from "@/types/training";
+import React, { useState } from "react";
+import { Alert, Modal, StyleSheet, Text, View } from "react-native";
 
-interface ExerciseFormProps {
+type ExerciseFormProps = {
   visible: boolean;
   onClose: () => void;
   onSave: (exercise: Exercise) => void;
-}
+};
 
 export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
-  const [name, setName] = useState('');
-  const [repetitions, setRepetitions] = useState('');
-  const [sets, setSets] = useState('');
-  const [weight, setWeight] = useState('');
+  const [name, setName] = useState("");
+  const [repetitions, setRepetitions] = useState("");
+  const [sets, setSets] = useState("");
+  const [weight, setWeight] = useState("");
   const [perSide, setPerSide] = useState(false);
 
   const handleSave = () => {
     if (!name.trim()) {
-      Alert.alert('Помилка', 'Введіть назву вправи');
+      Alert.alert("Помилка", "Введіть назву вправи");
       return;
     }
 
     if (!repetitions || !sets) {
-      Alert.alert('Помилка', 'Введіть кількість повторень та сетів');
+      Alert.alert("Помилка", "Введіть кількість повторень та сетів");
       return;
     }
 
@@ -42,16 +42,20 @@ export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
   };
 
   const handleClose = () => {
-    setName('');
-    setRepetitions('');
-    setSets('');
-    setWeight('');
+    setName("");
+    setRepetitions("");
+    setSets("");
+    setWeight("");
     setPerSide(false);
     onClose();
   };
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+    >
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Додати вправу</Text>
@@ -92,13 +96,18 @@ export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
 
           <View style={styles.checkboxContainer}>
             <Button
-              title={perSide ? '✓ Навантаження на кожну сторону' : 'Навантаження на кожну сторону'}
-              variant={perSide ? 'primary' : 'secondary'}
+              title={
+                perSide
+                  ? "✓ Навантаження на кожну сторону"
+                  : "Навантаження на кожну сторону"
+              }
+              variant={perSide ? "primary" : "secondary"}
               onPress={() => setPerSide(!perSide)}
               style={styles.checkbox}
             />
             <Text style={styles.checkboxDescription}>
-              Встановіть, якщо вказана вага розрахована на одну сторону (наприклад, гантелі)
+              Встановіть, якщо вказана вага розрахована на одну сторону
+              (наприклад, гантелі)
             </Text>
           </View>
 
@@ -118,22 +127,22 @@ export function ExerciseForm({ visible, onClose, onSave }: ExerciseFormProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: "#F2F2F7",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: "#E5E5EA",
   },
   title: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontWeight: "bold",
+    color: "#000000",
   },
   formCard: {
     margin: 16,
@@ -146,13 +155,13 @@ const styles = StyleSheet.create({
   },
   checkboxDescription: {
     fontSize: 12,
-    color: '#8E8E93',
+    color: "#8E8E93",
     marginLeft: 8,
   },
   actionButtons: {
     marginTop: 16,
   },
   saveButton: {
-    width: '100%',
+    width: "100%",
   },
 });
