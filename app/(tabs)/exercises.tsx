@@ -56,6 +56,7 @@ export default function ExercisesScreen() {
           value={searchQuery}
           onChangeText={setSearchQuery}
           containerStyle={styles.searchInput}
+          showClearButton
         />
       </View>
 

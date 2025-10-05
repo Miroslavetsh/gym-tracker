@@ -28,6 +28,7 @@ const MAPPING = {
   plus: "add",
   link: "link",
   "checkmark.circle.fill": "check-circle",
+  "xmark.circle.fill": "cancel",
 } as IconMapping;
 
 /**

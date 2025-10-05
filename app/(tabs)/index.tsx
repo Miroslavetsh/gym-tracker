@@ -87,6 +87,7 @@ export default function TrainingsScreen() {
             value={searchQuery}
             onChangeText={setSearchQuery}
             containerStyle={styles.searchInput}
+            showClearButton
           />
         </View>
       )}
