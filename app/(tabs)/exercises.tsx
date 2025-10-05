@@ -14,7 +14,7 @@ import { Exercise } from "@/types/training";
 const SEARCH_FIELDS: (keyof Exercise)[] = ["name", "weight", "repetitions"];
 
 export default function ExercisesScreen() {
-  const [exercises, setExercises] = useState<any[]>([]);
+  const [exercises, setExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(false);
 
   const {

@@ -1,4 +1,4 @@
-export function searchInValue(value: any, query: string): boolean {
+export function searchInValue(value: unknown, query: string): boolean {
   if (value === null || value === undefined) {
     return false;
   }

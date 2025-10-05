@@ -4,7 +4,7 @@ import { ComboBox } from "@/components/ui/combo-box";
 import { Input } from "@/components/ui/input";
 import { ExerciseService } from "@/services/exerciseService";
 import { ExerciseDto } from "@/types/training";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Alert, Modal, StyleSheet, Text, View } from "react-native";
 
 type ExerciseFormProps = {
@@ -14,16 +14,26 @@ type ExerciseFormProps = {
   initialData?: ExerciseDto;
 };
 
-export function ExerciseForm({ visible, onClose, onSave, initialData }: ExerciseFormProps) {
+export function ExerciseForm({
+  visible,
+  onClose,
+  onSave,
+  initialData,
+}: ExerciseFormProps) {
   const [name, setName] = useState(initialData?.name || "");
-  const [repetitions, setRepetitions] = useState(initialData?.repetitions?.toString() || "");
+  const [repetitions, setRepetitions] = useState(
+    initialData?.repetitions?.toString() || ""
+  );
   const [sets, setSets] = useState(initialData?.sets?.toString() || "");
   const [weight, setWeight] = useState(initialData?.weight?.toString() || "");
   const [perSide, setPerSide] = useState(initialData?.perSide || false);
   const [exerciseOptions, setExerciseOptions] = useState<string[]>([]);
   const [loadingExercises, setLoadingExercises] = useState(false);
 
-  // Загружаем список упражнений при открытии формы
+  const setsInputRef = useRef<any>(null);
+  const repetitionsInputRef = useRef<any>(null);
+  const weightInputRef = useRef<any>(null);
+
   useEffect(() => {
     if (visible) {
       loadExerciseOptions();
@@ -34,7 +44,7 @@ export function ExerciseForm({ visible, onClose, onSave, initialData }: Exercise
     setLoadingExercises(true);
     try {
       const exercises = await ExerciseService.getAllUniq();
-      const exerciseNames = exercises.map(exercise => exercise.name);
+      const exerciseNames = exercises.map((exercise) => exercise.name);
       setExerciseOptions(exerciseNames);
     } catch (error) {
       console.error("Failed to load exercises:", error);
@@ -101,27 +111,35 @@ export function ExerciseForm({ visible, onClose, onSave, initialData }: Exercise
           />
 
           <Input
+            ref={setsInputRef}
             label="Кількість сетів *"
             placeholder="0"
             value={sets}
             onChangeText={setSets}
             keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => repetitionsInputRef.current?.focus()}
           />
 
           <Input
+            ref={repetitionsInputRef}
             label="Повторення *"
             placeholder="0"
             value={repetitions}
             onChangeText={setRepetitions}
             keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => weightInputRef.current?.focus()}
           />
 
           <Input
+            ref={weightInputRef}
             label="Вага (кг)"
             placeholder="0"
             value={weight}
             onChangeText={setWeight}
             keyboardType="numeric"
+            returnKeyType="done"
           />
 
           <View style={styles.checkboxContainer}>

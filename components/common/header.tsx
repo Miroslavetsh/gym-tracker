@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({
     <View style={styles.header}>
       <View style={styles.titleContainer}>
         <IconSymbol
-          name={icon as any}
+          name={icon}
           size={24}
           color={iconColor}
           style={styles.titleIcon}

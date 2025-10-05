@@ -14,25 +14,24 @@ type InputProps = TextInputProps & {
   containerStyle?: ViewStyle;
 };
 
-export function Input({
-  label,
-  error,
-  containerStyle,
-  style,
-  ...props
-}: InputProps) {
-  return (
-    <View style={[styles.container, containerStyle]}>
-      {label && <Text style={styles.label}>{label}</Text>}
-      <TextInput
-        style={[styles.input, error && styles.inputError, style]}
-        placeholderTextColor="#8E8E93"
-        {...props}
-      />
-      {error && <Text style={styles.errorText}>{error}</Text>}
-    </View>
-  );
-}
+export const Input = React.forwardRef<TextInput, InputProps>(
+  ({ label, error, containerStyle, style, ...props }, ref) => {
+    return (
+      <View style={[styles.container, containerStyle]}>
+        {label && <Text style={styles.label}>{label}</Text>}
+        <TextInput
+          ref={ref}
+          style={[styles.input, error && styles.inputError, style]}
+          placeholderTextColor="#8E8E93"
+          {...props}
+        />
+        {error && <Text style={styles.errorText}>{error}</Text>}
+      </View>
+    );
+  }
+);
+
+Input.displayName = "Input";
 
 const styles = StyleSheet.create({
   container: {
