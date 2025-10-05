@@ -27,7 +27,6 @@ export function DatePicker({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(() => {
     if (value) {
-      // Парсим дату в формате YYYY-MM-DD с учетом локального времени
       const [year, month, day] = value.split("-").map(Number);
       return new Date(year, month - 1, day);
     }
@@ -43,14 +42,12 @@ export function DatePicker({
   };
 
   const formatDateForInput = (date: Date): string => {
-    // Форматируем дату с учетом локального времени
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
 
-  // Обновляем selectedDate при изменении value извне
   useEffect(() => {
     if (value) {
       const [year, month, day] = value.split("-").map(Number);
@@ -72,7 +69,6 @@ export function DatePicker({
     setIsOpen(false);
   };
 
-  // Генерируем календарь на текущий месяц
   const generateCalendar = () => {
     const today = new Date();
     const currentMonth = selectedDate.getMonth();
@@ -102,7 +98,6 @@ export function DatePicker({
 
     const calendar = [];
 
-    // Заголовок с месяцем и годом
     calendar.push(
       <View key="header" style={styles.monthHeader}>
         <Text style={styles.monthTitle}>
@@ -111,7 +106,6 @@ export function DatePicker({
       </View>
     );
 
-    // Дни недели
     calendar.push(
       <View key="weekdays" style={styles.weekdaysContainer}>
         {weekDays.map((day, index) => (
@@ -122,15 +116,12 @@ export function DatePicker({
       </View>
     );
 
-    // Календарная сетка
     const days = [];
 
-    // Пустые ячейки для начала месяца
     for (let i = 0; i < startingDayOfWeek; i++) {
       days.push(<View key={`empty-${i}`} style={styles.dayCell} />);
     }
 
-    // Дни месяца
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentYear, currentMonth, day);
       const isToday = date.toDateString() === today.toDateString();
