@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { Header } from "@/components/common/header";
 import { Card } from "@/components/ui/card";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Input } from "@/components/ui/input";
 import { useSearch } from "@/hooks/use-search";
 import { ExerciseService } from "@/services/exerciseService";
@@ -46,20 +46,10 @@ export default function ExercisesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.titleContainer}>
-          <IconSymbol
-            name="figure.strengthtraining.traditional"
-            size={24}
-            color="#007AFF"
-            style={styles.titleIcon}
-          />
-          <Text style={styles.title}>Таблиця вправ</Text>
-        </View>
-        <Text style={styles.subtitle}>
-          Перегляд та редагування всіх вправ з можливістю фільтрації та пошуку
-        </Text>
-      </View>
+      <Header
+        title="Таблиця вправ"
+        icon="figure.strengthtraining.traditional"
+      />
 
       <View style={styles.filtersContainer}>
         <Input
@@ -94,30 +84,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F2F2F7",
-  },
-  header: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    backgroundColor: "#FFFFFF",
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E5EA",
-  },
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 4,
-  },
-  titleIcon: {
-    marginRight: 8,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#000000",
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#8E8E93",
   },
   filtersContainer: {
     padding: 16,
