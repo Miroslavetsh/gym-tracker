@@ -30,7 +30,7 @@ interface Training {
   }>;
 }
 
-const getApiUrl = () => "https://technolifestore.com/api/sport/trainings";
+const getApiUrl = () => "https://technolifestore.com/api/gym-tracker/trainings";
 
 export default function GymTrackerScreen() {
   const [trainings, setTrainings] = useState<Training[]>([]);
