@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/Input";
 import { ExerciseService } from "@/services/exerciseService";
 import React, { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ExercisesScreen() {
   const [exercises, setExercises] = useState<any[]>([]);
@@ -69,7 +70,7 @@ export default function ExercisesScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Таблиця вправ</Text>
         <Text style={styles.subtitle}>
@@ -111,7 +112,7 @@ export default function ExercisesScreen() {
           </View>
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

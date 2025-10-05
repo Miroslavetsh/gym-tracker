@@ -11,6 +11,7 @@ import {
 } from "@/types/training";
 import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const TRAINING_TYPES = ["Верх", "Ноги", "Спина", "Груди", "Плечі", "Руки"];
 
@@ -88,13 +89,14 @@ export default function AddTrainingScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Додати тренування</Text>
-        <Text style={styles.subtitle}>
-          Створіть новий тренувальний день з усіма необхідними деталями
-        </Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Додати тренування</Text>
+          <Text style={styles.subtitle}>
+            Створіть новий тренувальний день з усіма необхідними деталями
+          </Text>
+        </View>
 
       <Card style={styles.formCard}>
         <Input
@@ -220,7 +222,8 @@ export default function AddTrainingScreen() {
         onClose={() => setShowSupersetForm(false)}
         onSave={handleAddSuperset}
       />
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -228,6 +231,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F2F2F7",
+  },
+  scrollView: {
+    flex: 1,
   },
   header: {
     paddingHorizontal: 16,
