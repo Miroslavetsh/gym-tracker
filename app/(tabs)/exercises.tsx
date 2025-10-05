@@ -61,7 +61,7 @@ export default function ExercisesScreen() {
 
       <FlatList
         data={filteredExercises}
-        renderItem={({ item }) => renderExercise(item)}
+        renderItem={({ item }) => renderExercise(item, searchQuery)}
         keyExtractor={(item) => Object.values(item).join("-")}
         contentContainerStyle={styles.listContainer}
         refreshing={loading}

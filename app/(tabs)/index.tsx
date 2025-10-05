@@ -97,6 +97,7 @@ export default function TrainingsScreen() {
           <RenderTraining
             item={item}
             handleDeleteTraining={handleDeleteTraining}
+            searchQuery={searchQuery}
           />
         )}
         keyExtractor={(item) => item.id}

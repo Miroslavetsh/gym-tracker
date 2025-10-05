@@ -1,3 +1,4 @@
+import { HighlightText } from "@/components/ui/highlight-text";
 import { Exercise, ExerciseDto, ExerciseOrSupersetDto } from "@/types/training";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -7,9 +8,16 @@ const getExerciseKey = (exercise: Exercise | ExerciseDto) => {
   return exercise?.name;
 };
 
-export const renderExercise = (exercise: Exercise | ExerciseDto) => (
+export const renderExercise = (
+  exercise: Exercise | ExerciseDto,
+  searchQuery: string = ""
+) => (
   <View key={getExerciseKey(exercise)} style={styles.exerciseItem}>
-    <Text style={styles.exerciseName}>{exercise.name}</Text>
+    <HighlightText
+      text={exercise.name}
+      searchQuery={searchQuery}
+      style={styles.exerciseName}
+    />
     <Text style={styles.exerciseDetails}>
       {exercise.sets} × {exercise.repetitions} {exercise.perSide && "по "}
       {exercise.weight > 0 && `${exercise.weight}кг`}
@@ -19,9 +27,13 @@ export const renderExercise = (exercise: Exercise | ExerciseDto) => (
 
 type ExercisesListProps = {
   exercises: Exercise[] | ExerciseDto[] | ExerciseOrSupersetDto[];
+  searchQuery?: string;
 };
 
-export const ExercisesList: React.FC<ExercisesListProps> = ({ exercises }) => (
+export const ExercisesList: React.FC<ExercisesListProps> = ({
+  exercises,
+  searchQuery = "",
+}) => (
   <View>
     {exercises?.map((exercise, index) => {
       const isSuperset = Array.isArray(exercise);
@@ -29,12 +41,12 @@ export const ExercisesList: React.FC<ExercisesListProps> = ({ exercises }) => (
         return (
           <View key={index} style={styles.supersetContainer}>
             <Text style={styles.supersetTitle}>Сет</Text>
-            {exercise.map(renderExercise)}
+            {exercise.map((ex) => renderExercise(ex, searchQuery))}
           </View>
         );
       }
 
-      return renderExercise(exercise);
+      return renderExercise(exercise, searchQuery);
     })}
   </View>
 );

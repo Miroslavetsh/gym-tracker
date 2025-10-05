@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { HighlightText } from "@/components/ui/highlight-text";
 import { Training } from "@/types/training";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -8,16 +9,22 @@ import { ExercisesList } from "../exercises/exercises-list";
 type RenderTrainingProps = {
   item: Training;
   handleDeleteTraining: (id: string) => void;
+  searchQuery?: string;
 };
 
 export function RenderTraining({
   item,
   handleDeleteTraining,
+  searchQuery = "",
 }: RenderTrainingProps) {
   return (
     <Card style={styles.trainingCard}>
       <View style={styles.trainingHeader}>
-        <Text style={styles.trainingKind}>{item.kind}</Text>
+        <HighlightText
+          text={item.kind}
+          searchQuery={searchQuery}
+          style={styles.trainingKind}
+        />
         <Text style={styles.trainingDate}>
           {new Date(item.date).toLocaleDateString("uk-UA")}
         </Text>
@@ -26,7 +33,7 @@ export function RenderTraining({
       {item.exercises && item.exercises.length > 0 && (
         <View style={styles.exercisesContainer}>
           <Text style={styles.exercisesTitle}>Вправи:</Text>
-          <ExercisesList exercises={item.exercises} />
+          <ExercisesList exercises={item.exercises} searchQuery={searchQuery} />
         </View>
       )}
 
