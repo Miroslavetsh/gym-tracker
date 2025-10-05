@@ -1,22 +1,35 @@
-import React from 'react';
-import { StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import { SymbolViewProps } from "expo-symbols";
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
+import { IconSymbol } from "./icon-symbol";
 
 interface ButtonProps {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: "primary" | "secondary" | "danger";
   style?: ViewStyle;
   textStyle?: TextStyle;
   disabled?: boolean;
+  icon?: string;
+  iconSize?: number;
 }
 
-export function Button({ 
-  title, 
-  onPress, 
-  variant = 'primary', 
-  style, 
-  textStyle, 
-  disabled = false 
+export function Button({
+  title,
+  onPress,
+  variant = "primary",
+  style,
+  textStyle,
+  disabled = false,
+  icon,
+  iconSize = 16,
 }: ButtonProps) {
   const buttonStyle = [
     styles.button,
@@ -39,7 +52,25 @@ export function Button({
       disabled={disabled}
       activeOpacity={0.7}
     >
-      <Text style={buttonTextStyle}>{title}</Text>
+      <View style={styles.content}>
+        {icon && (
+          <IconSymbol
+            name={icon as SymbolViewProps["name"]}
+            size={iconSize}
+            color={
+              disabled
+                ? "#8E8E93"
+                : variant === "primary" ||
+                  variant === "secondary" ||
+                  variant === "danger"
+                ? "#FFFFFF"
+                : "#000000"
+            }
+            style={styles.icon}
+          />
+        )}
+        <Text style={buttonTextStyle}>{title}</Text>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -49,35 +80,43 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  content: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  icon: {
+    marginRight: 6,
   },
   primary: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
   },
   secondary: {
-    backgroundColor: '#8E8E93',
+    backgroundColor: "#8E8E93",
   },
   danger: {
-    backgroundColor: '#FF3B30',
+    backgroundColor: "#FF3B30",
   },
   disabled: {
-    backgroundColor: '#C7C7CC',
+    backgroundColor: "#C7C7CC",
   },
   text: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   primaryText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   secondaryText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   dangerText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   disabledText: {
-    color: '#8E8E93',
+    color: "#8E8E93",
   },
 });

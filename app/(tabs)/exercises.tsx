@@ -1,19 +1,24 @@
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { TRAINING_TYPES } from "@/constants/training";
 import { ExerciseService } from "@/services/exerciseService";
-import React, { useEffect, useState } from "react";
-import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
+
+const allTypes = "Всі типи";
 
 export default function ExercisesScreen() {
   const [exercises, setExercises] = useState<any[]>([]);
   const [filteredExercises, setFilteredExercises] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState("Всі типи");
+  const [selectedType, setSelectedType] = useState(allTypes);
 
-  const exerciseTypes = ["Всі типи", "Верх", "Ноги"];
+  const exerciseTypes = [allTypes, ...TRAINING_TYPES];
 
   const fetchExercises = async () => {
     setLoading(true);
@@ -37,7 +42,7 @@ export default function ExercisesScreen() {
       );
     }
 
-    if (selectedType !== "Всі типи") {
+    if (selectedType !== allTypes) {
       filtered = filtered.filter((exercise) => exercise.type === selectedType);
     }
 
@@ -72,7 +77,15 @@ export default function ExercisesScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Таблиця вправ</Text>
+        <View style={styles.titleContainer}>
+          <IconSymbol
+            name="figure.strengthtraining.traditional"
+            size={24}
+            color="#007AFF"
+            style={styles.titleIcon}
+          />
+          <Text style={styles.title}>Таблиця вправ</Text>
+        </View>
         <Text style={styles.subtitle}>
           Перегляд та редагування всіх вправ з можливістю фільтрації та пошуку
         </Text>
@@ -105,7 +118,7 @@ export default function ExercisesScreen() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              {searchQuery || selectedType !== "Всі типи"
+              {searchQuery || selectedType !== allTypes
                 ? "Вправи не знайдено"
                 : "Немає вправ"}
             </Text>
@@ -128,11 +141,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5EA",
   },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  titleIcon: {
+    marginRight: 8,
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#000000",
-    marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,

@@ -1,10 +1,12 @@
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { TrainingService } from '@/services/trainingService';
-import { Training } from '@/types/training';
-import React, { useEffect, useState } from 'react';
-import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { TrainingService } from "@/services/trainingService";
+import { Training } from "@/types/training";
 
 export default function TrainingsScreen() {
   const [trainings, setTrainings] = useState<Training[]>([]);
@@ -16,7 +18,7 @@ export default function TrainingsScreen() {
       const data = await TrainingService.getAllTrainings();
       setTrainings(data);
     } catch (error) {
-      Alert.alert('Помилка', 'Не вдалося завантажити тренування');
+      Alert.alert("Помилка", "Не вдалося завантажити тренування");
     } finally {
       setLoading(false);
     }
@@ -24,19 +26,19 @@ export default function TrainingsScreen() {
 
   const handleDeleteTraining = async (trainingId: string) => {
     Alert.alert(
-      'Видалити тренування',
-      'Ви впевнені, що хочете видалити це тренування?',
+      "Видалити тренування",
+      "Ви впевнені, що хочете видалити це тренування?",
       [
-        { text: 'Скасувати', style: 'cancel' },
+        { text: "Скасувати", style: "cancel" },
         {
-          text: 'Видалити',
-          style: 'destructive',
+          text: "Видалити",
+          style: "destructive",
           onPress: async () => {
             try {
               await TrainingService.deleteTraining(trainingId);
-              setTrainings(prev => prev.filter(t => t.id !== trainingId));
+              setTrainings((prev) => prev.filter((t) => t.id !== trainingId));
             } catch (error) {
-              Alert.alert('Помилка', 'Не вдалося видалити тренування');
+              Alert.alert("Помилка", "Не вдалося видалити тренування");
             }
           },
         },
@@ -53,10 +55,10 @@ export default function TrainingsScreen() {
       <View style={styles.trainingHeader}>
         <Text style={styles.trainingKind}>{item.kind}</Text>
         <Text style={styles.trainingDate}>
-          {new Date(item.date).toLocaleDateString('uk-UA')}
+          {new Date(item.date).toLocaleDateString("uk-UA")}
         </Text>
       </View>
-      
+
       {item.exercises && item.exercises.length > 0 && (
         <View style={styles.exercisesContainer}>
           <Text style={styles.exercisesTitle}>Вправи:</Text>
@@ -66,19 +68,20 @@ export default function TrainingsScreen() {
               <Text style={styles.exerciseDetails}>
                 {exercise.sets} × {exercise.repetitions}
                 {exercise.weight && ` @ ${exercise.weight}кг`}
-                {exercise.perSide && ' (на сторону)'}
+                {exercise.perSide && " (на сторону)"}
               </Text>
             </View>
           ))}
         </View>
       )}
-      
+
       <View style={styles.trainingActions}>
         <Button
           title="Видалити"
           variant="danger"
           onPress={() => handleDeleteTraining(item.id)}
           style={styles.deleteButton}
+          icon="trash"
         />
       </View>
     </Card>
@@ -87,14 +90,23 @@ export default function TrainingsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Мої тренування</Text>
+        <View style={styles.titleContainer}>
+          <IconSymbol
+            name="calendar"
+            size={24}
+            color="#007AFF"
+            style={styles.titleIcon}
+          />
+          <Text style={styles.title}>Мої тренування</Text>
+        </View>
         <Button
           title="Оновити"
           onPress={fetchTrainings}
           disabled={loading}
+          icon="arrow.clockwise"
         />
       </View>
-      
+
       <FlatList
         data={trainings}
         renderItem={renderTraining}
@@ -115,22 +127,29 @@ export default function TrainingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: "#F2F2F7",
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
+    borderBottomColor: "#E5E5EA",
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  titleIcon: {
+    marginRight: 8,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontWeight: "bold",
+    color: "#000000",
   },
   listContainer: {
     padding: 16,
@@ -139,28 +158,28 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   trainingHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: 12,
   },
   trainingKind: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000000',
+    fontWeight: "bold",
+    color: "#000000",
   },
   trainingDate: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: "#8E8E93",
   },
   exercisesContainer: {
     marginBottom: 12,
   },
   exercisesTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
-    color: '#000000',
+    color: "#000000",
   },
   exerciseItem: {
     marginLeft: 8,
@@ -168,17 +187,17 @@ const styles = StyleSheet.create({
   },
   exerciseName: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#000000',
+    fontWeight: "500",
+    color: "#000000",
   },
   exerciseDetails: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: "#8E8E93",
     marginLeft: 8,
   },
   trainingActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
   },
   deleteButton: {
     paddingHorizontal: 12,
@@ -186,12 +205,12 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 50,
   },
   emptyText: {
     fontSize: 18,
-    color: '#8E8E93',
+    color: "#8E8E93",
   },
 });

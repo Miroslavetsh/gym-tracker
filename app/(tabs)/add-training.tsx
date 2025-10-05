@@ -1,19 +1,19 @@
+import React, { useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import { ExerciseForm } from "@/components/ExerciseForm";
 import { SupersetForm } from "@/components/SupersetForm";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
+import { IconSymbol } from "@/components/ui/icon-symbol";
 import { TrainingService } from "@/services/trainingService";
 import {
   CreateTrainingRequest,
   Exercise,
   ExerciseOrSuperset,
 } from "@/types/training";
-import React, { useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from 'react-native-safe-area-context';
-
-const TRAINING_TYPES = ["Верх", "Ноги", "Спина", "Груди", "Плечі", "Руки"];
 
 export default function AddTrainingScreen() {
   const [kind, setKind] = useState("");
@@ -92,136 +92,151 @@ export default function AddTrainingScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.header}>
-          <Text style={styles.title}>Додати тренування</Text>
+          <View style={styles.titleContainer}>
+            <IconSymbol
+              name="plus.circle.fill"
+              size={24}
+              color="#007AFF"
+              style={styles.titleIcon}
+            />
+            <Text style={styles.title}>Додати тренування</Text>
+          </View>
           <Text style={styles.subtitle}>
             Створіть новий тренувальний день з усіма необхідними деталями
           </Text>
         </View>
 
-      <Card style={styles.formCard}>
-        <Input
-          label="Тип тренування *"
-          placeholder="Оберіть тип тренування"
-          value={kind}
-          onChangeText={setKind}
-        />
+        <Card style={styles.formCard}>
+          <Input
+            label="Тип тренування *"
+            placeholder="Оберіть тип тренування"
+            value={kind}
+            onChangeText={setKind}
+          />
 
-        <Input
-          label="Дата тренування"
-          value={date}
-          onChangeText={setDate}
-          keyboardType="numeric"
-        />
+          <Input
+            label="Дата тренування"
+            value={date}
+            onChangeText={setDate}
+            keyboardType="numeric"
+          />
 
-        <View style={styles.exercisesSection}>
-          <Text style={styles.sectionTitle}>Вправи *</Text>
+          <View style={styles.exercisesSection}>
+            <Text style={styles.sectionTitle}>Вправи *</Text>
 
-          <View style={styles.addButtons}>
-            <Button
-              title="Додати вправу"
-              onPress={() => setShowExerciseForm(true)}
-              style={styles.addButton}
-            />
-            <Button
-              title="Додати сет"
-              variant="secondary"
-              onPress={() => setShowSupersetForm(true)}
-              style={styles.addButton}
-            />
+            <View style={styles.addButtons}>
+              <Button
+                title="Додати вправу"
+                onPress={() => setShowExerciseForm(true)}
+                style={styles.addButton}
+                icon="plus"
+              />
+              <Button
+                title="Додати сет"
+                variant="secondary"
+                onPress={() => setShowSupersetForm(true)}
+                style={styles.addButton}
+                icon="link"
+              />
+            </View>
+
+            {exercises.map((item: ExerciseOrSuperset, index) => (
+              <View key={index} style={styles.exerciseItem}>
+                <View style={styles.exerciseHeader}>
+                  <Text style={styles.exerciseTitle}>
+                    {Array.isArray(item)
+                      ? `Сет ${index + 1}`
+                      : `Вправа ${index + 1}`}
+                  </Text>
+                  <Button
+                    title="Видалити"
+                    variant="danger"
+                    onPress={() => handleRemoveExercise(index)}
+                    style={styles.deleteButton}
+                    icon="trash"
+                  />
+                </View>
+
+                {Array.isArray(item) ? (
+                  <View style={styles.supersetContent}>
+                    <Text style={styles.supersetTitle}>
+                      Вправи в сеті ({item.length})
+                    </Text>
+                    {item.map((exercise, exerciseIndex) => (
+                      <View key={exerciseIndex} style={styles.supersetExercise}>
+                        <Text style={styles.exerciseName}>{exercise.name}</Text>
+                        <Text style={styles.exerciseDetails}>
+                          {exercise.sets} × {exercise.repetitions}
+                          {exercise.weight > 0 && ` @ ${exercise.weight}кг`}
+                          {exercise.perSide && " (на сторону)"}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                ) : (
+                  <View style={styles.exerciseContent}>
+                    <Text style={styles.exerciseName}>{item.name}</Text>
+                    <Text style={styles.exerciseDetails}>
+                      {item.sets} × {item.repetitions}
+                      {item.weight > 0 && ` @ ${item.weight}кг`}
+                      {item.perSide && " (на сторону)"}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            ))}
           </View>
 
-          {exercises.map((item: ExerciseOrSuperset, index) => (
-            <View key={index} style={styles.exerciseItem}>
-              <View style={styles.exerciseHeader}>
-                <Text style={styles.exerciseTitle}>
-                  {Array.isArray(item)
-                    ? `Сет ${index + 1}`
-                    : `Вправа ${index + 1}`}
-                </Text>
-                <Button
-                  title="Видалити"
-                  variant="danger"
-                  onPress={() => handleRemoveExercise(index)}
-                  style={styles.deleteButton}
-                />
-              </View>
+          <View style={styles.actionButtons}>
+            <Button
+              title="Зберегти тренування"
+              onPress={handleSaveTraining}
+              disabled={loading}
+              style={styles.saveButton}
+              icon="checkmark.circle.fill"
+            />
+            <Button
+              title="Очистити все"
+              variant="secondary"
+              onPress={handleClearAll}
+              style={styles.clearButton}
+              icon="trash"
+            />
+          </View>
+        </Card>
 
-              {Array.isArray(item) ? (
-                <View style={styles.supersetContent}>
-                  <Text style={styles.supersetTitle}>
-                    Вправи в сеті ({item.length})
-                  </Text>
-                  {item.map((exercise, exerciseIndex) => (
-                    <View key={exerciseIndex} style={styles.supersetExercise}>
-                      <Text style={styles.exerciseName}>{exercise.name}</Text>
-                      <Text style={styles.exerciseDetails}>
-                        {exercise.sets} × {exercise.repetitions}
-                        {exercise.weight > 0 && ` @ ${exercise.weight}кг`}
-                        {exercise.perSide && " (на сторону)"}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              ) : (
-                <View style={styles.exerciseContent}>
-                  <Text style={styles.exerciseName}>{item.name}</Text>
-                  <Text style={styles.exerciseDetails}>
-                    {item.sets} × {item.repetitions}
-                    {item.weight > 0 && ` @ ${item.weight}кг`}
-                    {item.perSide && " (на сторону)"}
-                  </Text>
-                </View>
+        <Card style={styles.previewCard}>
+          <Text style={styles.previewTitle}>
+            Попередній перегляд тренування
+          </Text>
+          {kind && (
+            <View style={styles.previewContent}>
+              <View style={styles.previewTag}>
+                <Text style={styles.previewTagText}>{kind}</Text>
+              </View>
+              <Text style={styles.previewDate}>
+                {new Date(date).toLocaleDateString("uk-UA")}
+              </Text>
+              {exercises.length > 0 && (
+                <Text style={styles.previewExercises}>
+                  Вправ: {exercises.length}
+                </Text>
               )}
             </View>
-          ))}
-        </View>
+          )}
+        </Card>
 
-        <View style={styles.actionButtons}>
-          <Button
-            title="Зберегти тренування"
-            onPress={handleSaveTraining}
-            disabled={loading}
-            style={styles.saveButton}
-          />
-          <Button
-            title="Очистити все"
-            variant="secondary"
-            onPress={handleClearAll}
-            style={styles.clearButton}
-          />
-        </View>
-      </Card>
+        <ExerciseForm
+          visible={showExerciseForm}
+          onClose={() => setShowExerciseForm(false)}
+          onSave={handleAddExercise}
+        />
 
-      <Card style={styles.previewCard}>
-        <Text style={styles.previewTitle}>Попередній перегляд тренування</Text>
-        {kind && (
-          <View style={styles.previewContent}>
-            <View style={styles.previewTag}>
-              <Text style={styles.previewTagText}>{kind}</Text>
-            </View>
-            <Text style={styles.previewDate}>
-              {new Date(date).toLocaleDateString("uk-UA")}
-            </Text>
-            {exercises.length > 0 && (
-              <Text style={styles.previewExercises}>
-                Вправ: {exercises.length}
-              </Text>
-            )}
-          </View>
-        )}
-      </Card>
-
-      <ExerciseForm
-        visible={showExerciseForm}
-        onClose={() => setShowExerciseForm(false)}
-        onSave={handleAddExercise}
-      />
-
-      <SupersetForm
-        visible={showSupersetForm}
-        onClose={() => setShowSupersetForm(false)}
-        onSave={handleAddSuperset}
-      />
+        <SupersetForm
+          visible={showSupersetForm}
+          onClose={() => setShowSupersetForm(false)}
+          onSave={handleAddSuperset}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -242,11 +257,18 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#E5E5EA",
   },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  titleIcon: {
+    marginRight: 8,
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     color: "#000000",
-    marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
