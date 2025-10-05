@@ -8,8 +8,8 @@ import { ExerciseForm } from "@/components/trainings/exercise-form";
 import { SupersetForm } from "@/components/trainings/superset-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { DatePicker } from "@/components/ui/date-picker";
 import { IconSymbol } from "@/components/ui/icon-symbol";
-import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { TRAINING_TYPES } from "@/lib/constants/training";
 import { TrainingService } from "@/services/trainingService";
@@ -119,11 +119,11 @@ export default function AddTrainingScreen() {
             placeholder="Оберіть тип тренування"
           />
 
-          <Input
+          <DatePicker
             label="Дата тренування"
             value={date}
-            onChangeText={setDate}
-            keyboardType="numeric"
+            onValueChange={setDate}
+            placeholder="Оберіть дату тренування"
           />
 
           <View style={styles.exercisesSection}>
