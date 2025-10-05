@@ -24,23 +24,13 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
     setShowExerciseForm(true);
   };
 
-  const editExercise = (index: number) => {
-    setEditingIndex(index);
-    setShowExerciseForm(true);
-  };
 
   const removeExercise = (index: number) => {
     setExercises((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleExerciseSave = (exercise: ExerciseDto) => {
-    if (editingIndex !== null) {
-      setExercises((prev) =>
-        prev.map((ex, i) => (i === editingIndex ? exercise : ex))
-      );
-    } else {
-      setExercises((prev) => [...prev, exercise]);
-    }
+    setExercises((prev) => [...prev, exercise]);
     setShowExerciseForm(false);
     setEditingIndex(null);
   };
@@ -91,12 +81,6 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
                 </Text>
                 <View style={styles.exerciseActions}>
                   <Button
-                    title="Редагувати"
-                    variant="secondary"
-                    onPress={() => editExercise(index)}
-                    style={styles.editButton}
-                  />
-                  <Button
                     title="Видалити"
                     variant="danger"
                     onPress={() => removeExercise(index)}
@@ -127,9 +111,6 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
           setEditingIndex(null);
         }}
         onSave={handleExerciseSave}
-        initialData={
-          editingIndex !== null ? exercises[editingIndex] : undefined
-        }
       />
     </Modal>
   );
@@ -184,10 +165,6 @@ const styles = StyleSheet.create({
   exerciseActions: {
     flexDirection: "row",
     gap: 8,
-  },
-  editButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
   },
   deleteButton: {
     paddingHorizontal: 8,
