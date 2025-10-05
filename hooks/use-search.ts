@@ -1,3 +1,4 @@
+import { searchInObject } from "@/lib/utils/search-utils";
 import { useCallback, useEffect, useState } from "react";
 
 interface UseSearchOptions<T> {
@@ -28,15 +29,7 @@ export function useSearch<T>({
     }
 
     const query = searchQuery.toLowerCase().trim();
-    const filtered = data.filter((item) => {
-      return searchFields.some((field) => {
-        const fieldValue = item[field];
-        if (typeof fieldValue === "string") {
-          return fieldValue.toLowerCase().includes(query);
-        }
-        return false;
-      });
-    });
+    const filtered = data.filter((item) => searchInObject(item, searchFields, query));
 
     setFilteredData(filtered);
   }, [data, searchQuery, searchFields]);
