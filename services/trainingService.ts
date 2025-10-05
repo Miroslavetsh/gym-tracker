@@ -1,4 +1,4 @@
-import { CreateTrainingRequest, Training } from "../types/training";
+import { CreateTrainingRequest, Training, TrainingsResponse } from "../types/training";
 import { ApiService } from "./api";
 
 export class TrainingService {
@@ -6,8 +6,15 @@ export class TrainingService {
     return ApiService.get<Training[]>("/trainings");
   }
 
-  static async getLast10Trainings(): Promise<Training[]> {
-    return ApiService.get<Training[]>("/trainings?limit=10");
+  static async getPaginatedTrainings(
+    limit: number = 10,
+    offset: number = 0
+  ): Promise<TrainingsResponse> {
+    const searchParams = new URLSearchParams({
+      limit: limit.toString(),
+      offset: offset.toString(),
+    }).toString();
+    return ApiService.get<TrainingsResponse>(`/trainings?${searchParams}`);
   }
 
   static async createTraining(data: CreateTrainingRequest): Promise<Training> {

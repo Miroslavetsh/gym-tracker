@@ -1,20 +1,30 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/common/header";
 import { RenderTraining } from "@/components/trainings/render-training";
 import { TypeFilter } from "@/components/trainings/type-filter";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { usePagination } from "@/hooks/use-pagination";
 import { useTrainingFilters } from "@/hooks/use-training-filters";
 import { ALL_TYPES, TRAINING_TYPES } from "@/lib/constants/training";
 import { TrainingService } from "@/services/trainingService";
-import { Training } from "@/types/training";
 
 export default function TrainingsScreen() {
-  const [trainings, setTrainings] = useState<Training[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [filtersVisible, setFiltersVisible] = useState(false);
+  const [filtersVisible, setFiltersVisible] = useState(true);
+
+  const {
+    trainings,
+    loading,
+    loadingMore,
+    hasMore,
+    totalCount,
+    loadMore,
+    refresh,
+    error,
+  } = usePagination({ limit: 10 });
 
   const {
     selectedType,
@@ -24,18 +34,6 @@ export default function TrainingsScreen() {
     filteredTrainings,
     clearFilters,
   } = useTrainingFilters({ trainings });
-
-  const fetchTrainings = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await TrainingService.getLast10Trainings();
-      setTrainings(data);
-    } catch (error) {
-      Alert.alert("Помилка", "Не вдалося завантажити тренування");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   const handleDeleteTraining = async (trainingId: string) => {
     Alert.alert(
@@ -49,7 +47,7 @@ export default function TrainingsScreen() {
           onPress: async () => {
             try {
               await TrainingService.deleteTraining(trainingId);
-              setTrainings((prev) => prev.filter((t) => t.id !== trainingId));
+              await refresh();
             } catch (error) {
               Alert.alert("Помилка", "Не вдалося видалити тренування");
             }
@@ -62,8 +60,8 @@ export default function TrainingsScreen() {
   const toggleFilters = () => setFiltersVisible((prev) => !prev);
 
   useEffect(() => {
-    fetchTrainings();
-  }, [fetchTrainings]);
+    refresh();
+  }, [refresh]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -106,7 +104,7 @@ export default function TrainingsScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
         refreshing={loading}
-        onRefresh={fetchTrainings}
+        onRefresh={refresh}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
@@ -115,6 +113,21 @@ export default function TrainingsScreen() {
                 : "Тренування не знайдено"}
             </Text>
           </View>
+        }
+        ListFooterComponent={
+          <>
+            {hasMore && filteredTrainings.length > 0 && (
+              <View style={styles.loadMoreContainer}>
+                <Button
+                  title="Завантажити ще"
+                  onPress={loadMore}
+                  disabled={loadingMore}
+                  variant="secondary"
+                  style={styles.loadMoreButton}
+                />
+              </View>
+            )}
+          </>
         }
       />
     </SafeAreaView>
@@ -148,5 +161,13 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     color: "#8E8E93",
+  },
+  loadMoreContainer: {
+    padding: 16,
+    alignItems: "center",
+  },
+  loadMoreButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
   },
 });

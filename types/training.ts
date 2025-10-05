@@ -37,3 +37,22 @@ export interface Training {
     updatedAt: string;
   }>;
 }
+
+export interface PaginationInfo {
+  totalCount: number;
+  hasMore: boolean;
+  currentPage: number;
+  totalPages: number;
+  limit: number;
+  offset: number;
+}
+
+export interface TrainingsResponse {
+  trainings: Training[];
+  totalCount: number;
+  hasMore: boolean;
+  currentPage: number;
+  totalPages: number;
+  limit: number;
+  offset: number;
+}
