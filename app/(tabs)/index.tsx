@@ -24,14 +24,12 @@ export default function TrainingsScreen() {
     refresh,
     error,
   } = usePagination({ limit: 10 });
-
   const {
     selectedType,
     setSelectedType,
     searchQuery,
     setSearchQuery,
     filteredTrainings,
-    clearFilters,
   } = useTrainingFilters({ trainings });
 
   const handleDeleteTraining = async (trainingId: string) => {
@@ -68,9 +66,7 @@ export default function TrainingsScreen() {
       <Header
         title={`Мої тренування ${totalCount > 0 && `(${totalCount})`}`}
         icon="calendar"
-        onClear={clearFilters}
         onToggleFilters={toggleFilters}
-        showClearButton={selectedType !== ALL_TYPES || !!searchQuery}
         showToggleFiltersButton={true}
         filtersVisible={filtersVisible}
       />

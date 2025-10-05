@@ -1,6 +1,7 @@
+import { ALL_TYPES } from "@/lib/constants/training";
 import { searchAndFilterTrainings } from "@/lib/utils/training-search-utils";
 import { Training } from "@/types/training";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 interface UseTrainingFiltersOptions {
   trainings: Training[];
@@ -14,25 +15,20 @@ interface UseTrainingFiltersReturn {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   filteredTrainings: Training[];
-  clearFilters: () => void;
 }
 
 export function useTrainingFilters({
   trainings,
-  initialType = "Всі типи",
+  initialType = ALL_TYPES,
   initialSearchQuery = "",
 }: UseTrainingFiltersOptions): UseTrainingFiltersReturn {
   const [selectedType, setSelectedType] = useState(initialType);
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
 
-  const filteredTrainings = useMemo(() => {
-    return searchAndFilterTrainings(trainings, searchQuery, selectedType);
-  }, [trainings, searchQuery, selectedType]);
-
-  const clearFilters = useCallback(() => {
-    setSelectedType("Всі типи");
-    setSearchQuery("");
-  }, []);
+  const filteredTrainings = useMemo(
+    () => searchAndFilterTrainings(trainings, searchQuery, selectedType),
+    [trainings, searchQuery, selectedType]
+  );
 
   return {
     selectedType,
@@ -40,6 +36,5 @@ export function useTrainingFilters({
     searchQuery,
     setSearchQuery,
     filteredTrainings,
-    clearFilters,
   };
 }

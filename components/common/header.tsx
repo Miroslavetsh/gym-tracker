@@ -8,24 +8,18 @@ type HeaderProps = {
   title: string;
   icon: string;
   iconColor?: string;
-  onClear?: () => void;
   onToggleFilters?: () => void;
-  showClearButton?: boolean;
   showToggleFiltersButton?: boolean;
   filtersVisible?: boolean;
-  clearButtonTitle?: string;
 };
 
 export const Header: React.FC<HeaderProps> = ({
   title,
   icon,
   iconColor = "#007AFF",
-  onClear,
   onToggleFilters,
-  showClearButton = false,
   showToggleFiltersButton = false,
   filtersVisible = true,
-  clearButtonTitle = "Очистити",
 }) => {
   return (
     <View style={styles.header}>
@@ -45,15 +39,6 @@ export const Header: React.FC<HeaderProps> = ({
             onPress={onToggleFilters}
             icon={filtersVisible ? "chevron.up" : "chevron.down"}
             style={styles.toggleButton}
-          />
-        )}
-        {showClearButton && onClear && (
-          <Button
-            title={clearButtonTitle}
-            onPress={onClear}
-            variant="secondary"
-            icon="trash"
-            style={styles.clearButton}
           />
         )}
       </View>
@@ -89,10 +74,6 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   toggleButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  clearButton: {
     paddingHorizontal: 12,
     paddingVertical: 8,
   },
