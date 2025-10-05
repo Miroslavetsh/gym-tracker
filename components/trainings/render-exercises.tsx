@@ -12,7 +12,7 @@ export const renderExercise = (exercise: Exercise | ExerciseDto) => (
     <Text style={styles.exerciseName}>{exercise.name}</Text>
     <Text style={styles.exerciseDetails}>
       {exercise.sets} × {exercise.repetitions} {exercise.perSide && "по "}
-      {exercise.weight && `${exercise.weight}кг`}
+      {exercise.weight > 0 && `${exercise.weight}кг`}
     </Text>
   </View>
 );
