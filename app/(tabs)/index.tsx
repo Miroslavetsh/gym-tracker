@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { RenderExercises } from "@/components/exercises/render-exercises";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { IconSymbol } from "@/components/ui/icon-symbol";
@@ -62,16 +63,7 @@ export default function TrainingsScreen() {
       {item.exercises && item.exercises.length > 0 && (
         <View style={styles.exercisesContainer}>
           <Text style={styles.exercisesTitle}>Вправи:</Text>
-          {item.exercises.map((exercise, index) => (
-            <View key={index} style={styles.exerciseItem}>
-              <Text style={styles.exerciseName}>{exercise.name}</Text>
-              <Text style={styles.exerciseDetails}>
-                {exercise.sets} × {exercise.repetitions}
-                {exercise.weight && ` @ ${exercise.weight}кг`}
-                {exercise.perSide && " (на сторону)"}
-              </Text>
-            </View>
-          ))}
+          <RenderExercises exercises={item.exercises} />
         </View>
       )}
 
@@ -180,20 +172,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 8,
     color: "#000000",
-  },
-  exerciseItem: {
-    marginLeft: 8,
-    marginBottom: 4,
-  },
-  exerciseName: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#000000",
-  },
-  exerciseDetails: {
-    fontSize: 14,
-    color: "#8E8E93",
-    marginLeft: 8,
   },
   trainingActions: {
     flexDirection: "row",
