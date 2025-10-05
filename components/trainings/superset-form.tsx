@@ -5,8 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ExerciseDto } from "@/types/training";
 
+import { renderExercise } from "../exercises/exercises-list";
 import { ExerciseForm } from "./exercise-form";
-import { renderExercise } from "./render-exercises";
 
 type SupersetFormProps = {
   visible: boolean;

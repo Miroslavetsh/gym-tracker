@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { ExercisesList } from "@/components/exercises/exercises-list";
 import { ActionButtons } from "@/components/trainings/action-buttons";
 import { ExerciseForm } from "@/components/trainings/exercise-form";
-import { RenderExercises } from "@/components/trainings/render-exercises";
 import { SupersetForm } from "@/components/trainings/superset-form";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -145,7 +145,7 @@ export default function AddTrainingScreen() {
               />
             </View>
 
-            <RenderExercises exercises={exercises} />
+            <ExercisesList exercises={exercises} />
           </View>
 
           <ActionButtons

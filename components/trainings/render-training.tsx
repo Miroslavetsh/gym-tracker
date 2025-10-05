@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Training } from "@/types/training";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { RenderExercises } from "./render-exercises";
+import { ExercisesList } from "../exercises/exercises-list";
 
 type RenderTrainingProps = {
   item: Training;
@@ -26,7 +26,7 @@ export function RenderTraining({
       {item.exercises && item.exercises.length > 0 && (
         <View style={styles.exercisesContainer}>
           <Text style={styles.exercisesTitle}>Вправи:</Text>
-          <RenderExercises exercises={item.exercises} />
+          <ExercisesList exercises={item.exercises} />
         </View>
       )}
 

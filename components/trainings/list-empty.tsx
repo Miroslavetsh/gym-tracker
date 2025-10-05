@@ -10,7 +10,7 @@ const getEmptyListState = (
   if (loading) return "Завантаження...";
   if (searchQuery) return "Тренування не знайдено";
   if (selectedType === ALL_TYPES) return "Немає тренувань";
-  return "Тренування не знайдено";
+  return "Немає тренувань";
 };
 
 const ListEmpty = ({

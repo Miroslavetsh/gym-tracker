@@ -17,31 +17,29 @@ export const renderExercise = (exercise: Exercise | ExerciseDto) => (
   </View>
 );
 
-type RenderExercisesProps = {
+type ExercisesListProps = {
   exercises: Exercise[] | ExerciseDto[] | ExerciseOrSupersetDto[];
 };
 
-export const RenderExercises: React.FC<RenderExercisesProps> = ({
+export const ExercisesList: React.FC<ExercisesListProps> = ({
   exercises,
-}) => {
-  return (
-    <View>
-      {exercises?.map((exercise, index) => {
-        const isSuperset = Array.isArray(exercise);
-        if (isSuperset) {
-          return (
-            <View key={index} style={styles.supersetContainer}>
-              <Text style={styles.supersetTitle}>Сет</Text>
-              {exercise.map(renderExercise)}
-            </View>
-          );
-        }
+}) => (
+  <View>
+    {exercises?.map((exercise, index) => {
+      const isSuperset = Array.isArray(exercise);
+      if (isSuperset) {
+        return (
+          <View key={index} style={styles.supersetContainer}>
+            <Text style={styles.supersetTitle}>Сет</Text>
+            {exercise.map(renderExercise)}
+          </View>
+        );
+      }
 
-        return renderExercise(exercise);
-      })}
-    </View>
-  );
-};
+      return renderExercise(exercise);
+    })}
+  </View>
+);
 
 const styles = StyleSheet.create({
   exerciseItem: {

@@ -3,7 +3,7 @@ import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Header } from "@/components/common/header";
-import { renderExercise } from "@/components/trainings/render-exercises";
+import { renderExercise } from "@/components/exercises/exercises-list";
 import { Input } from "@/components/ui/input";
 import { useSearch } from "@/hooks/use-search";
 import { ExerciseService } from "@/services/exerciseService";
