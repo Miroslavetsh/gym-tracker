@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, Modal, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -58,7 +59,7 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
       animationType="slide"
       presentationStyle="pageSheet"
     >
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>Додати сет</Text>
           <Button title="Скасувати" variant="secondary" onPress={handleClose} />
@@ -102,7 +103,7 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
             </View>
           )}
         </View>
-      </View>
+      </SafeAreaView>
 
       <ExerciseForm
         visible={showExerciseForm}

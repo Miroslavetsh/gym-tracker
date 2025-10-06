@@ -6,6 +6,7 @@ import { ExerciseService } from "@/services/exerciseService";
 import { ExerciseDto } from "@/types/training";
 import React, { useEffect, useRef, useState } from "react";
 import { Alert, Modal, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type ExerciseFormProps = {
   visible: boolean;
@@ -92,7 +93,7 @@ export function ExerciseForm({
       animationType="slide"
       presentationStyle="pageSheet"
     >
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.title}>
             {initialData ? "Редагувати вправу" : "Додати вправу"}
@@ -167,7 +168,7 @@ export function ExerciseForm({
             />
           </View>
         </Card>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 }
