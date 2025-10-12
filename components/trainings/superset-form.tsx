@@ -18,13 +18,10 @@ type SupersetFormProps = {
 export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
   const [exercises, setExercises] = useState<ExerciseDto[]>([]);
   const [showExerciseForm, setShowExerciseForm] = useState(false);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
   const addExercise = () => {
-    setEditingIndex(null);
     setShowExerciseForm(true);
   };
-
 
   const removeExercise = (index: number) => {
     setExercises((prev) => prev.filter((_, i) => i !== index));
@@ -33,7 +30,6 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
   const handleExerciseSave = (exercise: ExerciseDto) => {
     setExercises((prev) => [...prev, exercise]);
     setShowExerciseForm(false);
-    setEditingIndex(null);
   };
 
   const handleSave = () => {
@@ -49,7 +45,6 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
   const handleClose = () => {
     setExercises([]);
     setShowExerciseForm(false);
-    setEditingIndex(null);
     onClose();
   };
 
@@ -109,7 +104,6 @@ export function SupersetForm({ visible, onClose, onSave }: SupersetFormProps) {
         visible={showExerciseForm}
         onClose={() => {
           setShowExerciseForm(false);
-          setEditingIndex(null);
         }}
         onSave={handleExerciseSave}
       />
