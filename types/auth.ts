@@ -7,7 +7,6 @@ export interface User {
 
 export interface AuthTokens {
   accessToken: string;
-  refreshToken: string;
 }
 
 export interface LoginCredentials {
@@ -28,6 +27,4 @@ export interface AuthResponse {
 
 export interface RefreshTokenResponse {
   accessToken: string;
-  refreshToken?: string; // Опционально, если сервер ротирует токены
 }
-
