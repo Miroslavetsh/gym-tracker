@@ -3,10 +3,8 @@ import React, { useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 
 import { AuthContainer } from "@/components/auth/auth-container";
-import { AuthDivider } from "@/components/auth/auth-divider";
 import { AuthFooter } from "@/components/auth/auth-footer";
 import { AuthHeader } from "@/components/auth/auth-header";
-import { GoogleAuthButton } from "@/components/auth/google-auth-button";
 import { LoginForm } from "@/components/auth/login-form";
 import { logApiInfo } from "@/utils/apiDiagnostics";
 
@@ -25,8 +23,9 @@ export default function LoginScreen() {
 
       <View style={styles.form}>
         <LoginForm />
-        <AuthDivider />
-        <GoogleAuthButton />
+        {/* TODO: Add Google Auth Button later
+         <AuthDivider />
+        <GoogleAuthButton /> */}
         <AuthFooter
           text="Немає акаунта?"
           linkText="Зареєструватися"
