@@ -14,7 +14,7 @@ export function ProfileHeader() {
       </ThemedText>
       {user && (
         <ThemedText type="default" style={styles.userInfo}>
-          {user.name || user.email}
+          {user.name} ({user.email})
         </ThemedText>
       )}
     </View>
@@ -35,4 +35,3 @@ const styles = StyleSheet.create({
     opacity: 0.7,
   },
 });
-
