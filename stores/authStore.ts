@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 import { AuthService } from "@/services/authService";
 import type {
   AuthResponse,
@@ -24,102 +25,110 @@ interface AuthState {
   setLoading: (loading: boolean) => void;
 }
 
-export const useAuthStore = create<AuthState>((set, get) => ({
-  // Initial state
-  user: null,
-  isLoading: true,
-  isInitialized: false,
+export const useAuthStore = create<AuthState>()(
+  devtools(
+    (set, get) => ({
+      // Initial state
+      user: null,
+      isLoading: true,
+      isInitialized: false,
 
-  // Initialize - проверяет сохраненные данные при запуске
-  initialize: async () => {
-    try {
-      set({ isLoading: true });
-      const savedUser = await AuthService.getUser();
-      const isAuth = await AuthService.isAuthenticated();
+      // Initialize - проверяет сохраненные данные при запуске
+      initialize: async () => {
+        try {
+          set({ isLoading: true });
+          const savedUser = await AuthService.getUser();
+          const isAuth = await AuthService.isAuthenticated();
 
-      if (savedUser && isAuth) {
-        set({ user: savedUser });
-      } else {
-        set({ user: null });
-      }
-    } catch (error) {
-      console.error("Auth initialization error:", error);
-      set({ user: null });
-    } finally {
-      set({ isLoading: false, isInitialized: true });
+          if (savedUser && isAuth) {
+            set({ user: savedUser });
+          } else {
+            set({ user: null });
+          }
+        } catch (error) {
+          console.error("Auth initialization error:", error);
+          set({ user: null });
+        } finally {
+          set({ isLoading: false, isInitialized: true });
+        }
+      },
+
+      // Login
+      login: async (credentials: LoginCredentials) => {
+        try {
+          set({ isLoading: true });
+          const response: AuthResponse = await AuthService.login(credentials);
+          set({ user: response.user, isLoading: false });
+        } catch (error) {
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      // Register
+      register: async (credentials: RegisterCredentials) => {
+        try {
+          set({ isLoading: true });
+          const response: AuthResponse = await AuthService.register(credentials);
+          set({ user: response.user, isLoading: false });
+        } catch (error) {
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      // Login with Google
+      loginWithGoogle: async (token: string) => {
+        try {
+          set({ isLoading: true });
+          const response: AuthResponse = await AuthService.loginWithGoogle(token);
+          set({ user: response.user, isLoading: false });
+        } catch (error) {
+          set({ isLoading: false });
+          throw error;
+        }
+      },
+
+      // Logout
+      logout: async () => {
+        try {
+          set({ isLoading: true });
+          await AuthService.logout();
+          set({ user: null, isLoading: false });
+        } catch (error) {
+          console.error("Logout error:", error);
+          // Всё равно очищаем state даже если API запрос не удался
+          set({ user: null, isLoading: false });
+        }
+      },
+
+      // Refresh user data
+      refreshUser: async () => {
+        try {
+          const savedUser = await AuthService.getUser();
+          if (savedUser) {
+            set({ user: savedUser });
+          }
+        } catch (error) {
+          console.error("Refresh user error:", error);
+        }
+      },
+
+      // Helper actions (для прямого обновления state если нужно)
+      setUser: (user: User | null) => {
+        set({ user });
+      },
+
+      setLoading: (loading: boolean) => {
+        set({ isLoading: loading });
+      },
+    }),
+    {
+      name: "AuthStore", // Название для Redux DevTools
+      enabled: __DEV__, // Только в dev режиме
     }
-  },
-
-  // Login
-  login: async (credentials: LoginCredentials) => {
-    try {
-      set({ isLoading: true });
-      const response: AuthResponse = await AuthService.login(credentials);
-      set({ user: response.user, isLoading: false });
-    } catch (error) {
-      set({ isLoading: false });
-      throw error;
-    }
-  },
-
-  // Register
-  register: async (credentials: RegisterCredentials) => {
-    try {
-      set({ isLoading: true });
-      const response: AuthResponse = await AuthService.register(credentials);
-      set({ user: response.user, isLoading: false });
-    } catch (error) {
-      set({ isLoading: false });
-      throw error;
-    }
-  },
-
-  // Login with Google
-  loginWithGoogle: async (token: string) => {
-    try {
-      set({ isLoading: true });
-      const response: AuthResponse = await AuthService.loginWithGoogle(token);
-      set({ user: response.user, isLoading: false });
-    } catch (error) {
-      set({ isLoading: false });
-      throw error;
-    }
-  },
-
-  // Logout
-  logout: async () => {
-    try {
-      set({ isLoading: true });
-      await AuthService.logout();
-      set({ user: null, isLoading: false });
-    } catch (error) {
-      console.error("Logout error:", error);
-      // Всё равно очищаем state даже если API запрос не удался
-      set({ user: null, isLoading: false });
-    }
-  },
-
-  // Refresh user data
-  refreshUser: async () => {
-    try {
-      const savedUser = await AuthService.getUser();
-      if (savedUser) {
-        set({ user: savedUser });
-      }
-    } catch (error) {
-      console.error("Refresh user error:", error);
-    }
-  },
-
-  // Helper actions (для прямого обновления state если нужно)
-  setUser: (user: User | null) => {
-    set({ user });
-  },
-
-  setLoading: (loading: boolean) => {
-    set({ isLoading: loading });
-  },
-}));
+  )
+);
 
 // Основной хук - использует селекторы для оптимизации
 export const useAuth = () => {
@@ -148,4 +157,3 @@ export const useAuthUser = () => useAuthStore((state) => state.user);
 export const useAuthLoading = () => useAuthStore((state) => state.isLoading);
 export const useIsAuthenticated = () =>
   useAuthStore((state) => !!state.user);
-

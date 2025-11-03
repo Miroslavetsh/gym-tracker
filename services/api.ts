@@ -5,6 +5,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { TokenManager } from "./tokenManager";
+import { logger, logCategories } from "@/utils/logger";
 
 const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ||
@@ -12,7 +13,7 @@ const API_BASE_URL =
 
 // Логируем базовый URL для дебага
 if (__DEV__) {
-  console.log("🔗 API Base URL:", API_BASE_URL);
+  logger.info(logCategories.API, `Base URL: ${API_BASE_URL}`);
 }
 
 let isRefreshing = false;
@@ -26,19 +27,21 @@ const axiosInstance: AxiosInstance = axios.create({
   timeout: 30000,
 });
 
-// Добавляем логирование запросов в dev режиме
-if (__DEV__) {
-  axiosInstance.interceptors.request.use(
-    (config) => {
-      console.log("📤 Request:", config.method?.toUpperCase(), config.url);
-      return config;
-    },
-    (error) => {
-      console.error("❌ Request Error:", error);
-      return Promise.reject(error);
-    }
-  );
-}
+// Добавляем логирование запросов
+axiosInstance.interceptors.request.use(
+  (config) => {
+    logger.api.request(
+      config.method?.toUpperCase() || "GET",
+      config.url || "",
+      config.data
+    );
+    return config;
+  },
+  (error) => {
+    logger.error(logCategories.API, "Request setup error", error);
+    return Promise.reject(error);
+  }
+);
 
 axiosInstance.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
@@ -61,6 +64,12 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => {
+    logger.api.response(
+      response.config.method?.toUpperCase() || "GET",
+      response.config.url || "",
+      response.status,
+      response.data
+    );
     return response;
   },
   async (error: AxiosError) => {
@@ -91,17 +100,12 @@ axiosInstance.interceptors.response.use(
       }
     }
 
-    // Логирование ошибок для дебага
-    if (__DEV__) {
-      console.error("❌ API Error:", {
-        message: error.message,
-        code: error.code,
-        response: error.response?.data,
-        status: error.response?.status,
-        request: error.request ? "Request sent but no response" : null,
-        url: error.config?.url,
-      });
-    }
+    // Логирование ошибок
+    logger.api.error(
+      error.config?.method?.toUpperCase() || "GET",
+      error.config?.url || "",
+      error
+    );
 
     if (error.response) {
       // Сервер ответил с ошибкой
