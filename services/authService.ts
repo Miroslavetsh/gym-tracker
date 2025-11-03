@@ -38,7 +38,7 @@ export class AuthService {
         credentials
       );
 
-      await this.saveToken(response.tokens.accessToken);
+      await this.saveToken(response.accessToken);
       await this.saveUser(response.user);
 
       return response;
@@ -54,7 +54,7 @@ export class AuthService {
         credentials
       );
 
-      await this.saveToken(response.tokens.accessToken);
+      await this.saveToken(response.accessToken);
       await this.saveUser(response.user);
 
       return response;
@@ -69,7 +69,7 @@ export class AuthService {
         token: googleToken,
       });
 
-      await this.saveToken(response.tokens.accessToken);
+      await this.saveToken(response.accessToken);
       await this.saveUser(response.user);
 
       return response;

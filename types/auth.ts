@@ -5,10 +5,6 @@ export interface User {
   avatar?: string;
 }
 
-export interface AuthTokens {
-  accessToken: string;
-}
-
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -22,7 +18,7 @@ export interface RegisterCredentials {
 
 export interface AuthResponse {
   user: User;
-  tokens: AuthTokens;
+  accessToken: string;
 }
 
 export interface RefreshTokenResponse {
