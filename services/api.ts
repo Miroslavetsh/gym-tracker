@@ -10,6 +10,11 @@ const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ||
   "https://technolifestore.com/api/gym-tracker";
 
+// Логируем базовый URL для дебага
+if (__DEV__) {
+  console.log("🔗 API Base URL:", API_BASE_URL);
+}
+
 let isRefreshing = false;
 let refreshPromise: Promise<string> | null = null;
 
@@ -20,6 +25,20 @@ const axiosInstance: AxiosInstance = axios.create({
   },
   timeout: 30000,
 });
+
+// Добавляем логирование запросов в dev режиме
+if (__DEV__) {
+  axiosInstance.interceptors.request.use(
+    (config) => {
+      console.log("📤 Request:", config.method?.toUpperCase(), config.url);
+      return config;
+    },
+    (error) => {
+      console.error("❌ Request Error:", error);
+      return Promise.reject(error);
+    }
+  );
+}
 
 axiosInstance.interceptors.request.use(
   async (config: InternalAxiosRequestConfig) => {
@@ -72,17 +91,38 @@ axiosInstance.interceptors.response.use(
       }
     }
 
+    // Логирование ошибок для дебага
+    if (__DEV__) {
+      console.error("❌ API Error:", {
+        message: error.message,
+        code: error.code,
+        response: error.response?.data,
+        status: error.response?.status,
+        request: error.request ? "Request sent but no response" : null,
+        url: error.config?.url,
+      });
+    }
+
     if (error.response) {
+      // Сервер ответил с ошибкой
       const message =
         (error.response.data as any)?.message ||
-        error.response.data ||
+        (typeof error.response.data === "string"
+          ? error.response.data
+          : null) ||
         error.message ||
         `HTTP error! status: ${error.response.status}`;
       throw new Error(message);
     } else if (error.request) {
-      throw new Error("Network error. Please check your connection.");
+      // Запрос был отправлен, но ответа нет
+      const isTimeout = error.code === "ECONNABORTED";
+      const errorMessage = isTimeout
+        ? "Запит занадто довго виконується. Перевірте інтернет з'єднання."
+        : `Не вдалося підключитися до сервера. Перевірте інтернет з'єднання та правильність URL: ${API_BASE_URL}`;
+      throw new Error(errorMessage);
     } else {
-      throw new Error(error.message || "An unexpected error occurred");
+      // Ошибка при настройке запроса
+      throw new Error(error.message || "Неочікувана помилка");
     }
   }
 );
