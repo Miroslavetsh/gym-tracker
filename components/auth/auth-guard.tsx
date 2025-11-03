@@ -4,15 +4,25 @@ import { ActivityIndicator, StyleSheet } from "react-native";
 
 import { ThemedText } from "@/components/common/themed-text";
 import { ThemedView } from "@/components/common/themed-view";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuthStore } from "@/stores/authStore";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { isLoading, isAuthenticated } = useAuth();
+  const isLoading = useAuthStore((state) => state.isLoading);
+  const isInitialized = useAuthStore((state) => state.isInitialized);
+  const user = useAuthStore((state) => state.user);
+  const isAuthenticated = !!user;
   const segments = useSegments();
   const router = useRouter();
 
   React.useEffect(() => {
-    if (isLoading) return;
+    // Инициализируем auth store при первом рендере
+    if (!isInitialized) {
+      useAuthStore.getState().initialize();
+    }
+  }, [isInitialized]);
+
+  React.useEffect(() => {
+    if (isLoading || !isInitialized) return;
 
     const inAuthGroup = segments?.length > 0 && segments[0] === "(auth)";
     const inTabsGroup = segments?.length > 0 && segments[0] === "(tabs)";
@@ -22,9 +32,9 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     } else if (isAuthenticated && inAuthGroup) {
       router.replace("/(tabs)");
     }
-  }, [isAuthenticated, isLoading, segments, router]);
+  }, [isAuthenticated, isLoading, isInitialized, segments, router]);
 
-  if (isLoading) {
+  if (isLoading || !isInitialized) {
     return (
       <ThemedView style={styles.loadingContainer}>
         <ActivityIndicator size="large" />

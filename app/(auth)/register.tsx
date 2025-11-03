@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/common/themed-text";
 import { ThemedView } from "@/components/common/themed-view";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/stores/authStore";
 import { RegisterCredentials } from "@/types/auth";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";

@@ -4,9 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-import { AuthProvider } from '@/contexts/AuthContext';
 import { AuthGuard } from '@/components/auth/auth-guard';
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -17,33 +16,31 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <AuthProvider>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <AuthGuard>
-            <Stack>
-              <Stack.Screen 
-                name="login" 
-                options={{ 
-                  headerShown: false,
-                  presentation: 'card',
-                }} 
-              />
-              <Stack.Screen 
-                name="register" 
-                options={{ 
-                  headerShown: false,
-                  presentation: 'card',
-                }} 
-              />
-              <Stack.Screen 
-                name="(tabs)" 
-                options={{ headerShown: false }} 
-              />
-            </Stack>
-            <StatusBar style="auto" />
-          </AuthGuard>
-        </ThemeProvider>
-      </AuthProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <AuthGuard>
+          <Stack>
+            <Stack.Screen 
+              name="login" 
+              options={{ 
+                headerShown: false,
+                presentation: 'card',
+              }} 
+            />
+            <Stack.Screen 
+              name="register" 
+              options={{ 
+                headerShown: false,
+                presentation: 'card',
+              }} 
+            />
+            <Stack.Screen 
+              name="(tabs)" 
+              options={{ headerShown: false }} 
+            />
+          </Stack>
+          <StatusBar style="auto" />
+        </AuthGuard>
+      </ThemeProvider>
     </SafeAreaProvider>
   );
 }

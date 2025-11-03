@@ -1,6 +1,8 @@
 import { TokenManager } from "./tokenManager";
 
-const API_BASE_URL = "https://technolifestore.com/api/gym-tracker";
+const API_BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL ||
+  "https://technolifestore.com/api/gym-tracker";
 
 let isRefreshing = false;
 let refreshPromise: Promise<string> | null = null;
@@ -86,7 +88,7 @@ export class ApiService {
     }
 
     isRefreshing = true;
-    
+
     // Используем динамический импорт чтобы избежать циклической зависимости
     const { AuthService } = await import("./authService");
     refreshPromise = AuthService.refreshAccessToken();
