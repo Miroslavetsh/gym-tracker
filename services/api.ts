@@ -1,3 +1,9 @@
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosRequestConfig,
+  InternalAxiosRequestConfig,
+} from "axios";
 import { TokenManager } from "./tokenManager";
 
 const API_BASE_URL =
@@ -7,147 +13,178 @@ const API_BASE_URL =
 let isRefreshing = false;
 let refreshPromise: Promise<string> | null = null;
 
-interface ApiRequestOptions extends RequestInit {
-  skipAuth?: boolean;
-}
+const axiosInstance: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  timeout: 30000,
+});
 
-export class ApiService {
-  private static async getHeaders(includeAuth = true): Promise<HeadersInit> {
-    const headers: HeadersInit = {
-      "Content-Type": "application/json",
-    };
+axiosInstance.interceptors.request.use(
+  async (config: InternalAxiosRequestConfig) => {
+    const isAuthEndpoint = config.url?.startsWith("/auth/");
+    const skipAuth = (config as any).skipAuth;
 
-    if (includeAuth) {
+    if (!isAuthEndpoint && !skipAuth) {
       const accessToken = await TokenManager.getAccessToken();
       if (accessToken) {
-        headers["Authorization"] = `Bearer ${accessToken}`;
+        config.headers.Authorization = `Bearer ${accessToken}`;
       }
     }
 
-    return headers;
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
+);
 
-  private static async request<T>(
-    endpoint: string,
-    options: ApiRequestOptions = {},
-    retryCount = 0
-  ): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
-    const isAuthEndpoint = endpoint.startsWith("/auth/");
-
-    const headers = await this.getHeaders(!isAuthEndpoint && !options.skipAuth);
-
-    const response = await fetch(url, {
-      headers: {
-        ...headers,
-        ...options.headers,
-      },
-      ...options,
-    });
+axiosInstance.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async (error: AxiosError) => {
+    const originalRequest = error.config as InternalAxiosRequestConfig & {
+      _retry?: boolean;
+    };
 
     if (
-      response.status === 401 &&
-      !isAuthEndpoint &&
-      retryCount === 0 &&
-      !options.skipAuth
+      error.response?.status === 401 &&
+      originalRequest &&
+      !originalRequest.url?.startsWith("/auth/") &&
+      !originalRequest._retry &&
+      !(originalRequest as any).skipAuth
     ) {
+      originalRequest._retry = true;
+
       try {
-        await this.refreshTokenIfNeeded();
+        await refreshTokenIfNeeded();
 
-        const newHeaders = await this.getHeaders(true);
-        const retryResponse = await fetch(url, {
-          headers: {
-            ...newHeaders,
-            ...options.headers,
-          },
-          ...options,
-        });
-
-        if (!retryResponse.ok) {
-          throw new Error(`HTTP error! status: ${retryResponse.status}`);
+        const accessToken = await TokenManager.getAccessToken();
+        if (accessToken) {
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         }
 
-        return retryResponse.json();
+        return axiosInstance(originalRequest);
       } catch (refreshError) {
         throw new Error("Authentication failed. Please login again.");
       }
     }
 
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => "");
-      throw new Error(errorText || `HTTP error! status: ${response.status}`);
+    if (error.response) {
+      const message =
+        (error.response.data as any)?.message ||
+        error.response.data ||
+        error.message ||
+        `HTTP error! status: ${error.response.status}`;
+      throw new Error(message);
+    } else if (error.request) {
+      throw new Error("Network error. Please check your connection.");
+    } else {
+      throw new Error(error.message || "An unexpected error occurred");
     }
+  }
+);
 
-    return response.json();
+/**
+ */
+async function refreshTokenIfNeeded(): Promise<void> {
+  if (isRefreshing && refreshPromise) {
+    await refreshPromise;
+    return;
   }
 
-  private static async refreshTokenIfNeeded(): Promise<void> {
-    if (isRefreshing && refreshPromise) {
-      await refreshPromise;
-      return;
-    }
+  isRefreshing = true;
 
-    isRefreshing = true;
+  const { AuthService } = await import("./authService");
+  refreshPromise = AuthService.refreshAccessToken();
 
-    // Используем динамический импорт чтобы избежать циклической зависимости
-    const { AuthService } = await import("./authService");
-    refreshPromise = AuthService.refreshAccessToken();
+  try {
+    await refreshPromise;
+  } finally {
+    isRefreshing = false;
+    refreshPromise = null;
+  }
+}
 
+interface ApiRequestOptions extends AxiosRequestConfig {
+  skipAuth?: boolean;
+}
+
+export class ApiService {
+  private static async request<T>(
+    endpoint: string,
+    config: ApiRequestOptions = {}
+  ): Promise<T> {
     try {
-      await refreshPromise;
-    } finally {
-      isRefreshing = false;
-      refreshPromise = null;
+      const response = await axiosInstance.request<T>({
+        url: endpoint,
+        ...config,
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
     }
   }
 
   static async get<T>(
     endpoint: string,
-    options: ApiRequestOptions = {}
+    config: ApiRequestOptions = {}
   ): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: "GET" });
+    return this.request<T>(endpoint, {
+      ...config,
+      method: "GET",
+    });
   }
 
   static async post<T>(
     endpoint: string,
-    data: unknown,
-    options: ApiRequestOptions = {}
+    data?: unknown,
+    config: ApiRequestOptions = {}
   ): Promise<T> {
     return this.request<T>(endpoint, {
-      ...options,
+      ...config,
       method: "POST",
-      body: JSON.stringify(data),
+      data,
     });
   }
 
   static async put<T>(
     endpoint: string,
-    data: unknown,
-    options: ApiRequestOptions = {}
+    data?: unknown,
+    config: ApiRequestOptions = {}
   ): Promise<T> {
     return this.request<T>(endpoint, {
-      ...options,
+      ...config,
       method: "PUT",
-      body: JSON.stringify(data),
+      data,
     });
   }
 
   static async patch<T>(
     endpoint: string,
-    data: unknown,
-    options: ApiRequestOptions = {}
+    data?: unknown,
+    config: ApiRequestOptions = {}
   ): Promise<T> {
     return this.request<T>(endpoint, {
-      ...options,
+      ...config,
       method: "PATCH",
-      body: JSON.stringify(data),
+      data,
     });
   }
 
   static async delete<T>(
     endpoint: string,
-    options: ApiRequestOptions = {}
+    config: ApiRequestOptions = {}
   ): Promise<T> {
-    return this.request<T>(endpoint, { ...options, method: "DELETE" });
+    return this.request<T>(endpoint, {
+      ...config,
+      method: "DELETE",
+    });
+  }
+
+  static getInstance(): AxiosInstance {
+    return axiosInstance;
   }
 }

@@ -15,7 +15,6 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   React.useEffect(() => {
-    // Инициализируем auth store при первом рендере
     if (!isInitialized) {
       useAuthStore.getState().initialize();
     }
