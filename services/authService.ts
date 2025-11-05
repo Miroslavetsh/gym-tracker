@@ -12,12 +12,19 @@ import { TokenManager } from "./tokenManager";
 const USER_KEY = "user_data";
 
 export class AuthService {
-  private static async saveToken(accessToken: string): Promise<void> {
-    await TokenManager.setAccessToken(accessToken);
+  private static async saveTokens(
+    accessToken: string,
+    refreshToken?: string
+  ): Promise<void> {
+    await TokenManager.setTokens(accessToken, refreshToken);
   }
 
   static async getAccessToken(): Promise<string | null> {
     return await TokenManager.getAccessToken();
+  }
+
+  static async getRefreshToken(): Promise<string | null> {
+    return await TokenManager.getRefreshToken();
   }
 
   static async saveUser(user: User): Promise<void> {
@@ -38,7 +45,7 @@ export class AuthService {
         credentials
       );
 
-      await this.saveToken(response.accessToken);
+      await this.saveTokens(response.accessToken, response.refreshToken);
       await this.saveUser(response.user);
 
       return response;
@@ -54,7 +61,7 @@ export class AuthService {
         credentials
       );
 
-      await this.saveToken(response.accessToken);
+      await this.saveTokens(response.accessToken, response.refreshToken);
       await this.saveUser(response.user);
 
       return response;
@@ -69,7 +76,7 @@ export class AuthService {
         token: googleToken,
       });
 
-      await this.saveToken(response.accessToken);
+      await this.saveTokens(response.accessToken, response.refreshToken);
       await this.saveUser(response.user);
 
       return response;
@@ -79,9 +86,9 @@ export class AuthService {
   }
 
   static async refreshAccessToken(): Promise<string> {
-    const accessToken = await this.getAccessToken();
+    const refreshToken = await this.getRefreshToken();
 
-    if (!accessToken) {
+    if (!refreshToken) {
       throw new Error("No refresh token available");
     }
 
@@ -89,11 +96,15 @@ export class AuthService {
       const response = await ApiService.post<RefreshTokenResponse>(
         "/auth/refresh",
         {
-          accessToken,
+          refreshToken,
         }
       );
 
       await TokenManager.setAccessToken(response.accessToken);
+
+      if (response.refreshToken) {
+        await TokenManager.setRefreshToken(response.refreshToken);
+      }
 
       return response.accessToken;
     } catch (error) {
@@ -108,7 +119,7 @@ export class AuthService {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      await TokenManager.clearAccessToken();
+      await TokenManager.clearTokens();
       await SecureStore.deleteItemAsync(USER_KEY);
     }
   }

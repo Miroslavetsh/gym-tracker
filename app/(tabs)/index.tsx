@@ -13,6 +13,7 @@ import { useTrainingFilters } from "@/hooks/use-training-filters";
 import { ALL_TYPES, TRAINING_TYPES } from "@/lib/constants/training";
 import { getEmptyTrainingListState } from "@/lib/utils/empty-list-utils";
 import { TrainingService } from "@/services/trainingService";
+import { ThemedText } from "@/components/common/themed-text";
 
 export default function TrainingsScreen() {
   const [filtersVisible, setFiltersVisible] = useState(true);
@@ -64,7 +65,9 @@ export default function TrainingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {error && <View>Alert.alert("Помилка", error)</View>}
+      <ThemedText>
+        {error && <View>Alert.alert("Помилка", error)</View>}
+      </ThemedText>
       <Header
         title={`Мої тренування ${totalCount > 0 ? `(${totalCount})` : ""}`}
         icon="calendar"
@@ -115,13 +118,15 @@ export default function TrainingsScreen() {
           <>
             {hasMore && filteredTrainings.length > 0 && (
               <View style={styles.loadMoreContainer}>
-                <Button
-                  title="Завантажити ще"
-                  onPress={loadMore}
-                  disabled={loadingMore}
-                  variant="secondary"
-                  style={styles.loadMoreButton}
-                />
+                <ThemedText>
+                  <Button
+                    title="Завантажити ще"
+                    onPress={loadMore}
+                    disabled={loadingMore}
+                    variant="secondary"
+                    style={styles.loadMoreButton}
+                  />
+                </ThemedText>
               </View>
             )}
           </>

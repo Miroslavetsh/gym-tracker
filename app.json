@@ -51,6 +51,8 @@
       "eas": {
         "projectId": "baccd752-9678-47f8-99db-173213a71889"
       }
-    }
-  }
+    },
+    "sdkVersion": "54.0.0"
+  },
+  "name": "gym-tracker"
 }

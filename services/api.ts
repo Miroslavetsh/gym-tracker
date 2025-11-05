@@ -4,14 +4,13 @@ import axios, {
   AxiosRequestConfig,
   InternalAxiosRequestConfig,
 } from "axios";
-import { TokenManager } from "./tokenManager";
 import { logger, logCategories } from "@/utils/logger";
+import { TokenManager } from "./tokenManager";
 
 const API_BASE_URL =
   process.env.EXPO_PUBLIC_API_URL ||
   "https://technolifestore.com/api/gym-tracker";
 
-// Логируем базовый URL для дебага
 if (__DEV__) {
   logger.info(logCategories.API, `Base URL: ${API_BASE_URL}`);
 }
@@ -27,7 +26,6 @@ const axiosInstance: AxiosInstance = axios.create({
   timeout: 30000,
 });
 
-// Добавляем логирование запросов
 axiosInstance.interceptors.request.use(
   (config) => {
     logger.api.request(
@@ -100,7 +98,6 @@ axiosInstance.interceptors.response.use(
       }
     }
 
-    // Логирование ошибок
     logger.api.error(
       error.config?.method?.toUpperCase() || "GET",
       error.config?.url || "",
@@ -108,7 +105,6 @@ axiosInstance.interceptors.response.use(
     );
 
     if (error.response) {
-      // Сервер ответил с ошибкой
       const message =
         (error.response.data as any)?.message ||
         (typeof error.response.data === "string"
@@ -118,21 +114,17 @@ axiosInstance.interceptors.response.use(
         `HTTP error! status: ${error.response.status}`;
       throw new Error(message);
     } else if (error.request) {
-      // Запрос был отправлен, но ответа нет
       const isTimeout = error.code === "ECONNABORTED";
       const errorMessage = isTimeout
         ? "Запит занадто довго виконується. Перевірте інтернет з'єднання."
         : `Не вдалося підключитися до сервера. Перевірте інтернет з'єднання та правильність URL: ${API_BASE_URL}`;
       throw new Error(errorMessage);
     } else {
-      // Ошибка при настройке запроса
       throw new Error(error.message || "Неочікувана помилка");
     }
   }
 );
 
-/**
- */
 async function refreshTokenIfNeeded(): Promise<void> {
   if (isRefreshing && refreshPromise) {
     await refreshPromise;
