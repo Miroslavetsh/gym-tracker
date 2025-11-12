@@ -12,9 +12,7 @@ export default function LoginScreen() {
   const router = useRouter();
 
   useEffect(() => {
-    if (__DEV__) {
-      logApiInfo();
-    }
+    if (__DEV__) logApiInfo();
   }, []);
 
   return (
@@ -24,7 +22,7 @@ export default function LoginScreen() {
       <View style={styles.form}>
         <LoginForm />
         {/* TODO: Add Google Auth Button later
-         <AuthDivider />
+        <AuthDivider />
         <GoogleAuthButton /> */}
         <AuthFooter
           text="Немає акаунта?"
