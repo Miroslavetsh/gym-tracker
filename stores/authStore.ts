@@ -9,12 +9,10 @@ import type {
 } from "@/types/auth";
 
 interface AuthState {
-  // State
   user: User | null;
   isLoading: boolean;
   isInitialized: boolean;
 
-  // Actions
   initialize: () => Promise<void>;
   login: (credentials: LoginCredentials) => Promise<void>;
   register: (credentials: RegisterCredentials) => Promise<void>;
@@ -28,12 +26,10 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   devtools(
     (set, get) => ({
-      // Initial state
       user: null,
       isLoading: true,
       isInitialized: false,
 
-      // Initialize - проверяет сохраненные данные при запуске
       initialize: async () => {
         try {
           set({ isLoading: true });
@@ -53,7 +49,6 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      // Login
       login: async (credentials: LoginCredentials) => {
         try {
           set({ isLoading: true });
@@ -65,11 +60,12 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      // Register
       register: async (credentials: RegisterCredentials) => {
         try {
           set({ isLoading: true });
-          const response: AuthResponse = await AuthService.register(credentials);
+          const response: AuthResponse = await AuthService.register(
+            credentials
+          );
           set({ user: response.user, isLoading: false });
         } catch (error) {
           set({ isLoading: false });
@@ -77,11 +73,12 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      // Login with Google
       loginWithGoogle: async (token: string) => {
         try {
           set({ isLoading: true });
-          const response: AuthResponse = await AuthService.loginWithGoogle(token);
+          const response: AuthResponse = await AuthService.loginWithGoogle(
+            token
+          );
           set({ user: response.user, isLoading: false });
         } catch (error) {
           set({ isLoading: false });
@@ -89,7 +86,6 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      // Logout
       logout: async () => {
         try {
           set({ isLoading: true });
@@ -97,12 +93,10 @@ export const useAuthStore = create<AuthState>()(
           set({ user: null, isLoading: false });
         } catch (error) {
           console.error("Logout error:", error);
-          // Всё равно очищаем state даже если API запрос не удался
           set({ user: null, isLoading: false });
         }
       },
 
-      // Refresh user data
       refreshUser: async () => {
         try {
           const savedUser = await AuthService.getUser();
@@ -114,7 +108,6 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      // Helper actions (для прямого обновления state если нужно)
       setUser: (user: User | null) => {
         set({ user });
       },
@@ -124,13 +117,12 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: "AuthStore", // Название для Redux DevTools
-      enabled: __DEV__, // Только в dev режиме
+      name: "AuthStore",
+      enabled: __DEV__,
     }
   )
 );
 
-// Основной хук - использует селекторы для оптимизации
 export const useAuth = () => {
   const user = useAuthStore((state) => state.user);
   const isLoading = useAuthStore((state) => state.isLoading);
@@ -152,8 +144,6 @@ export const useAuth = () => {
   };
 };
 
-// Селекторы для отдельных значений (меньше ре-рендеров при использовании в компонентах)
 export const useAuthUser = () => useAuthStore((state) => state.user);
 export const useAuthLoading = () => useAuthStore((state) => state.isLoading);
-export const useIsAuthenticated = () =>
-  useAuthStore((state) => !!state.user);
+export const useIsAuthenticated = () => useAuthStore((state) => !!state.user);
