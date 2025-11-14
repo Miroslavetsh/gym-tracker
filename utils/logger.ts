@@ -1,8 +1,3 @@
-/**
- * Централизованная утилита для логирования
- * Поддерживает разные уровни логирования и форматирование
- */
-
 type LogLevel = "debug" | "info" | "warn" | "error";
 
 interface LogConfig {
@@ -23,10 +18,10 @@ const levels: Record<LogLevel, number> = {
 };
 
 const colors: Record<LogLevel, string> = {
-  debug: "\x1b[36m", // Cyan
-  info: "\x1b[32m", // Green
-  warn: "\x1b[33m", // Yellow
-  error: "\x1b[31m", // Red
+  debug: "\x1b[36m",
+  info: "\x1b[32m",
+  warn: "\x1b[33m",
+  error: "\x1b[31m",
 };
 
 const resetColor = "\x1b[0m";
@@ -97,9 +92,6 @@ export const logger = {
     }
   },
 
-  /**
-   * Группирует логи для лучшей читаемости
-   */
   group: (category: string, label: string, fn: () => void) => {
     if (__DEV__) {
       console.group(`📦 [${category.toUpperCase()}] ${label}`);
@@ -110,18 +102,12 @@ export const logger = {
     }
   },
 
-  /**
-   * Логирует объект в читаемом формате
-   */
   object: (category: string, label: string, obj: any) => {
     if (shouldLog("debug")) {
       console.log(`📦 [${category.toUpperCase()}] ${label}:`, obj);
     }
   },
 
-  /**
-   * Логирует API запрос
-   */
   api: {
     request: (method: string, url: string, data?: any) => {
       if (shouldLog("debug")) {
@@ -143,15 +129,11 @@ export const logger = {
     },
   },
 
-  /**
-   * Настройка логирования
-   */
   configure: (newConfig: Partial<LogConfig>) => {
     Object.assign(config, newConfig);
   },
 };
 
-// Экспортируем категории для удобства
 export const logCategories = {
   API: "API",
   AUTH: "AUTH",
